@@ -48,7 +48,7 @@ PyPlot.savefig("fig/hw1/rs_fig.eps", dpi=150)
 
 I_true = 2/pi
 
-N_try = floor.(Int,LinRange(100,100000, 50))
+N_try = floor.(Int,LinRange(100,1000, 20))
 
 I_hitandmiss = zeros(length(N_try))
 
@@ -58,8 +58,8 @@ for h in 1:length(N_try)
     N_acc = 0
     for i in 1:N_try[h]
         x_star = rand()
-        u = rand()
-        if u <= f(x_star)
+        y = rand()
+        if y <= f(x_star)
             N_acc = N_acc + 1
         end
     end
@@ -71,6 +71,7 @@ end
 PyPlot.figure()
 PyPlot.plot(N_try, I_hitandmiss, "--*r")
 PyPlot.plot(N_try, I_true*ones(length(N_try)), "b")
+PyPlot.savefig("fig/hw1/rs_area_hitandmiss.eps", dpi=150)
 
 
 
@@ -78,15 +79,12 @@ PyPlot.plot(N_try, I_true*ones(length(N_try)), "b")
 
 I_true = 2/pi
 
-N_try = floor.(Int,LinRange(100,100000, 50))
+N_try = floor.(Int,LinRange(100,1000, 50))
 
-I_hitandmiss = zeros(length(N_try))
-
-
+I_importance = zeros(length(N_try))
 
 f(x) = cos.(pi.*x./2)
 g(x) = 1 .- x.^2
-
 
 x = collect(LinRange(0,1, 50))
 
@@ -94,31 +92,37 @@ PyPlot.figure()
 PyPlot.plot(x,f(x), "b")
 PyPlot.plot(x,g(x), "r")
 
+
 for h in 1:length(N_try)
     N_acc = 0
+
+    samples = zeros(N_try[h])
     for i in 1:N_try[h]
 
         new_prop = true
 
         while new_prop
             x_star = rand()
-            u = rand()
-            if u <= g(x_star)
+            y = rand()
+            if y <= g(x_star)
                 new_prop = false
+                if y <= f(x_star)
+                    N_acc = N_acc + 1
+                end
             end
-        end
-
-        u = rand()
-        if u <= f(x_star)
-            N_acc = N_acc + 1
         end
 
     end
 
-    I_hitandmiss[h] = N_acc/N_try[h]
+    I_importance[h] = 2/3*N_acc/N_try[h]
+    #I_importance[h] = sum(f(samples)./g(samples))/N_try[h]
+
 end
 
 
+
+
 PyPlot.figure()
-PyPlot.plot(N_try, I_hitandmiss, "--*r")
+PyPlot.plot(N_try, I_importance, "--*r")
 PyPlot.plot(N_try, I_true*ones(length(N_try)), "b")
+PyPlot.savefig("fig/hw1/rs_area_importancehitandmiss.eps", dpi=150)
