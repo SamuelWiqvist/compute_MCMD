@@ -11,8 +11,8 @@ u = rand(10^5)
 PyPlot.figure()
 h = PyPlot.plt[:hist](u,100)
 PyPlot.xlabel("x")
-PyPlot.ylabel("Density")
-PyPlot.savefig("fig/hw1/rs_warmup.eps", dpi=150)
+PyPlot.ylabel("Freq.")
+PyPlot.savefig("hw_week_1/fig/rs_warmup.eps", dpi=150)
 
 
 # sample for f
@@ -42,13 +42,13 @@ PyPlot.plot(kde_approx.x[1:end-3],kde_approx.density[1:end-3], "--r")
 PyPlot.plot(collect(kde_approx.x[1:end-3]), f(kde_approx.x[1:end-3]), "b")
 PyPlot.xlabel("x")
 PyPlot.ylabel("Density")
-PyPlot.savefig("fig/hw1/rs_fig.eps", dpi=150)
+PyPlot.savefig("hw_week_1/fig/rs_fig.eps", dpi=150)
 
 # integration using hit-and-miss
 
 I_true = 2/pi
 
-N_try = floor.(Int,LinRange(100,1000, 20))
+N_try = floor.(Int,LinRange(100,10000, 50))
 
 I_hitandmiss = zeros(length(N_try))
 
@@ -66,32 +66,12 @@ for h in 1:length(N_try)
     I_hitandmiss[h] = N_acc/N_try[h]
 end
 
-
-
-PyPlot.figure()
-PyPlot.plot(N_try, I_hitandmiss, "--*r")
-PyPlot.plot(N_try, I_true*ones(length(N_try)), "b")
-PyPlot.savefig("fig/hw1/rs_area_hitandmiss.eps", dpi=150)
-
-
-
 # integration using hit-and-miss with importance sampling
-
-I_true = 2/pi
-
-N_try = floor.(Int,LinRange(100,1000, 50))
 
 I_importance = zeros(length(N_try))
 
 f(x) = cos.(pi.*x./2)
 g(x) = 1 .- x.^2
-
-x = collect(LinRange(0,1, 50))
-
-PyPlot.figure()
-PyPlot.plot(x,f(x), "b")
-PyPlot.plot(x,g(x), "r")
-
 
 for h in 1:length(N_try)
     N_acc = 0
@@ -119,10 +99,10 @@ for h in 1:length(N_try)
 
 end
 
-
-
-
 PyPlot.figure()
-PyPlot.plot(N_try, I_importance, "--*r")
+PyPlot.plot(N_try, I_hitandmiss, "--*r")
+PyPlot.plot(N_try, I_importance, "--*g")
 PyPlot.plot(N_try, I_true*ones(length(N_try)), "b")
-PyPlot.savefig("fig/hw1/rs_area_importancehitandmiss.eps", dpi=150)
+PyPlot.xlabel("Numbre of samples")
+PyPlot.ylabel("Area")
+PyPlot.savefig("hw_week_1/fig/rs_area_importance_and_hitandmiss.eps", dpi=150)
