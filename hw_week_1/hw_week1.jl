@@ -18,7 +18,7 @@ PyPlot.savefig("hw_week_1/fig/rs_warmup.eps", dpi=150)
 # sample from f
 
 N = 10^5
-M = 1/100
+M = 100
 samples = zeros(N)
 
 f(x) = sin.(x).*sin.(x)./x.^2
