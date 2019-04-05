@@ -15,7 +15,7 @@ PyPlot.ylabel("Freq.")
 PyPlot.savefig("hw_week_1/fig/rs_warmup.eps", dpi=150)
 
 
-# sample for f
+# sample from f
 
 N = 10^5
 M = 1/100
@@ -52,7 +52,7 @@ N_try = floor.(Int,LinRange(100,10000, 50))
 
 I_hitandmiss = zeros(length(N_try))
 
-f(x) = cos(pi*x/2)
+f(x) = cos.(pi.*x./2)
 
 for h in 1:length(N_try)
     N_acc = 0
@@ -70,17 +70,13 @@ end
 
 I_importance = zeros(length(N_try))
 
-f(x) = cos.(pi.*x./2)
 g(x) = 1 .- x.^2
 
 for h in 1:length(N_try)
     N_acc = 0
-
     samples = zeros(N_try[h])
     for i in 1:N_try[h]
-
         new_prop = true
-
         while new_prop
             x_star = rand()
             y = rand()
@@ -91,12 +87,8 @@ for h in 1:length(N_try)
                 end
             end
         end
-
     end
-
     I_importance[h] = 2/3*N_acc/N_try[h]
-    #I_importance[h] = sum(f(samples)./g(samples))/N_try[h]
-
 end
 
 PyPlot.figure()
