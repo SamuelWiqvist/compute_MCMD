@@ -31,34 +31,3 @@ function game(grid::Array, wrap_around::Bool)
 
     return nbr_tosses
 end
-
-# set parameters for game
-nbr_games = 10^5
-
-grid = zeros(9,9)
-
-tosses_vec = zeros(nbr_games)
-
-wrap_around = false
-
-# run games
-for i = 1:nbr_games
-    tosses_vec[i] = game(grid, wrap_around)
-end
-
-# normalize
-grid = (grid .- minimum(grid)) ./ (maximum(grid) - minimum(grid))
-
-# rotate
-grid = rotl90(grid)
-
-# plot results
-using PyPlot
-
-PyPlot.figure()
-PyPlot.imshow(grid,cmap="hot", interpolation="nearest")
-PyPlot.colorbar()
-
-
-PyPlot.figure()
-h = PyPlot.plt[:hist](tosses_vec,10)
