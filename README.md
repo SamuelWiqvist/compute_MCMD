@@ -1,3 +1,5 @@
 # compute_MCMD
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SamuelWiqvist/compute_MCMD/master)
+
 Code for the course *Monte Carlo and Molecular Dynamics Tools*, spring 2019.
