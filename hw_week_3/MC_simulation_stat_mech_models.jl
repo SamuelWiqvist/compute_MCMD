@@ -1,5 +1,5 @@
 using PyPlot
-
+using Printf
 ################################################################################
 # Warmup: simulate the Ising model using the Metroplis algorithm
 ################################################################################
@@ -267,33 +267,8 @@ function δ(s, s_star)
 end
 
 
-
-S_start
-
-
-δ(S_start[1,1], S_start[2,1])
-
-J = 1
-
-H_potts(S_start,J)
-
-
-J = 1 # interaction strength (we have the same interaction strength for all states)
-iter = 1000 # nbr of MC interstions
-t = 10
-
-
-
-g_tilde
-
-
-findall(x -> x = 10, 1:20)
-
-
-
-
-# Wang-Landau algorithm with one fixed t value for inter interastion
-function wang_landau(S_start, iter, J, spins, t)
+# Wang-Landau algorithm with one fixed t value
+function wang_landau(S_start, iter, J, q, t)
 
     nbr_stats = length(S_start) # set up
     S_configs = zeros(iter, size(S_start,1),size(S_start,2))
@@ -302,19 +277,19 @@ function wang_landau(S_start, iter, J, spins, t)
     g_tilde = zeros(2,iter) #[g_tilde, E]
     g_tilde[1,:] = ones(iter)
 
-    H_old = H_potts(S_configs[1,:,:], J) # first iteration
     S_configs[1,:,:] = S_start
+    H_old = H_potts(S_configs[1,:,:], J) # first iteration
+
     g_tilde[1,1] = 1
     g_tilde[2,1] = H_old
     α_log = log(1)
 
     for i = 2:iter
 
-        println(i)
         # ordinary update
         S_update = S_configs[i-1,:,:] # select state to flip at random
         S_flip = rand(1:nbr_stats) # flip state
-        S_update[S_flip] = rand(1:spins) # set prop config
+        S_update[S_flip] = rand(1:q) # set prop config
 
         H_new = H_potts(S_update,J) # compute energy for prop config
 
@@ -334,6 +309,7 @@ function wang_landau(S_start, iter, J, spins, t)
         if log(rand()) < min(0, α_log) # accapt new config
             S_configs[i,:,:] = S_update
             g_tilde[2,i] = H_new
+            a_vec[i] = 1
         else
             S_configs[i,:,:] = S_configs[i-1,:,:] # store old config
             g_tilde[2,i] = g_tilde[2,i-1]
@@ -357,5 +333,80 @@ function wang_landau(S_start, iter, J, spins, t)
 end
 
 
+# Full Wang-Landau algorithm where the t value is decreased
+function full_wang_landau(nbr_reps,iter, J, q, t, dims = 100)
 
-S_configs, g_tilde, a_vec = wang_landau(S_start, iter, J, spins, t)
+    println("Starting Wang-Landau.")
+
+    # full Wang-Landau algorithm
+    S_start = zeros(dims,dims)
+    g_save = zeros(nbr_reps,2,iter)
+    t_save = zeros(nbr_reps)
+
+    for i = 1:nbr_reps
+
+        # run algorithm
+        S_start = map!(x -> x = rand(1:q), S_start, S_start)
+
+        S_configs, g_tilde, a_vec = wang_landau(S_start, iter, J, q, t)
+
+        g_save[i,:,:] = g_tilde
+        t_save[i] = t
+
+        # print info
+        @printf "-----------------------------------------------------------------\n"
+        @printf "Iter: %f\n" i
+        @printf "t: %f\n" t
+        @printf "Acc. rate: %f %%\n" sum(a_vec)/iter*100
+
+        # update t
+        t = sqrt(t)
+
+    end
+
+    return g_save, t_save
+
+end
+
+
+
+J = 1 # interaction strength (we have the same interaction strength for all states)
+iter = 10000 # nbr of MC interstions
+t = 10
+nbr_reps = 10
+
+
+g_save, t_save = full_wang_landau(nbr_reps,iter, J, q, t)
+
+PyPlot.figure()
+PyPlot.plot(t_save)
+PyPlot.title("Scaling")
+
+for i = 1:size(g_save,1)
+
+    g_tilde = g_save[i,:,:]
+
+    # plot g function
+    energy = unique(g_tilde[2,:])
+    g = zeros(length(energy))
+
+
+    for i = 1:length(energy)
+
+        idx = findlast(x -> x == energy[i], g_tilde[2,:])
+        g[i] = g_tilde[1,idx]
+
+    end
+
+    PyPlot.figure()
+    PyPlot.plot(energy, g, "*-")
+    PyPlot.title(t_save[i])
+
+end
+
+
+# code to test partial wang-landau
+# run algorithm
+#S_start = zeros(dims,dims)
+#S_start = map!(x -> x = rand(1:q), S_start, S_start)
+#S_configs, g_tilde, a_vec = @time wang_landau(S_start, iter, J, q, t)
