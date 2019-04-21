@@ -1,5 +1,7 @@
 using PyPlot
 using Printf
+
+
 ################################################################################
 # Warmup: simulate the Ising model using the Metroplis algorithm
 ################################################################################
@@ -177,7 +179,7 @@ PyPlot.imshow(S_configs[200000,:,:], cmap="hot", interpolation="nearest")
 
 # generate start condiguration for stat S
 dims = 100
-q = 5
+q = 10
 S_start = zeros(dims,dims)
 map!(x -> x = rand(1:q), S_start, S_start)
 
@@ -268,7 +270,7 @@ end
 
 
 # Wang-Landau algorithm with one fixed t value
-function wang_landau(S_start, iter, J, q, t)
+function wang_landau(S_start, iter, J, q, f)
 
     nbr_stats = length(S_start) # set up
     S_configs = zeros(iter, size(S_start,1),size(S_start,2))
@@ -324,7 +326,7 @@ function wang_landau(S_start, iter, J, q, t)
             g_update = g_tilde[1,g_update_idx[1]]
         end
 
-        g_tilde[1,i] = t*g_update
+        g_tilde[1,i] = f*g_update
 
     end
 
@@ -334,37 +336,42 @@ end
 
 
 # Full Wang-Landau algorithm where the t value is decreased
-function full_wang_landau(nbr_reps,iter, J, q, t, dims = 100)
+function full_wang_landau(nbr_reps,iter, J, q, f, dims = 100)
 
     println("Starting Wang-Landau.")
 
     # full Wang-Landau algorithm
     S_start = zeros(dims,dims)
     g_save = zeros(nbr_reps,2,iter)
-    t_save = zeros(nbr_reps)
+    f_save = zeros(nbr_reps)
+    S_configs_last = zeros(iter, size(S_start,1),size(S_start,2))
 
     for i = 1:nbr_reps
 
         # run algorithm
         S_start = map!(x -> x = rand(1:q), S_start, S_start)
 
-        S_configs, g_tilde, a_vec = wang_landau(S_start, iter, J, q, t)
+        S_configs, g_tilde, a_vec = wang_landau(S_start, iter, J, q, f)
 
         g_save[i,:,:] = g_tilde
-        t_save[i] = t
+        f_save[i] = f
 
         # print info
         @printf "-----------------------------------------------------------------\n"
         @printf "Iter: %f\n" i
-        @printf "t: %f\n" t
+        @printf "f: %f\n" f
         @printf "Acc. rate: %f %%\n" sum(a_vec)/iter*100
 
         # update t
-        t = sqrt(t)
+        f = sqrt(f)
+
+        if i == nbr_reps
+            S_configs_last = S_configs
+        end
 
     end
 
-    return g_save, t_save
+    return g_save, f_save, S_configs_last
 
 end
 
@@ -372,15 +379,19 @@ end
 
 J = 1 # interaction strength (we have the same interaction strength for all states)
 iter = 10000 # nbr of MC interstions
-t = 10
-nbr_reps = 10
+f = 10
+nbr_reps = 26 # such that 10^((1/2)^26) \approx exp(10^(-8))
+q = 10
 
+g_save, f_save, S_configs_last = @time full_wang_landau(nbr_reps, iter, J, q, f)
 
-g_save, t_save = full_wang_landau(nbr_reps,iter, J, q, t)
 
 PyPlot.figure()
-PyPlot.plot(t_save)
+PyPlot.plot(f_save)
 PyPlot.title("Scaling")
+
+
+PyPlot.figure()
 
 for i = 1:size(g_save,1)
 
@@ -398,11 +409,70 @@ for i = 1:size(g_save,1)
 
     end
 
-    PyPlot.figure()
+
+    g = g/sum(g)
+
+    PyPlot.subplot(13,2,i)
     PyPlot.plot(energy, g, "*-")
-    PyPlot.title(t_save[i])
+    PyPlot.title(f_save[i])
 
 end
+
+
+
+
+for i = size(g_save,1)-4:size(g_save,1)
+
+    g_tilde = g_save[i,:,:]
+
+    # plot g function
+    energy = unique(g_tilde[2,:])
+    g = zeros(length(energy))
+
+
+    for i = 1:length(energy)
+
+        idx = findlast(x -> x == energy[i], g_tilde[2,:])
+        g[i] = g_tilde[1,idx]
+
+    end
+
+    g = g/sum(g)
+
+
+    PyPlot.figure()
+    PyPlot.plot(energy, g, "*-")
+    PyPlot.title(f_save[i])
+
+
+end
+
+
+iter_plot = floor.(Int,LinRange(1,iter,100))
+
+PyPlot.figure()
+for i = iter_plot
+    sleep(0.001)
+    PyPlot.imshow(S_configs_last[i,:,:], cmap="hot", interpolation="nearest")
+    PyPlot.xlabel(i)
+end
+
+
+
+PyPlot.figure()
+PyPlot.imshow(S_configs_last[1,:,:], cmap="hot", interpolation="nearest")
+
+PyPlot.figure()
+PyPlot.imshow(S_configs_last[1000,:,:], cmap="hot", interpolation="nearest")
+
+PyPlot.figure()
+PyPlot.imshow(S_configs_last[2000,:,:], cmap="hot", interpolation="nearest")
+
+PyPlot.figure()
+PyPlot.imshow(S_configs_last[5000,:,:], cmap="hot", interpolation="nearest")
+
+PyPlot.figure()
+PyPlot.imshow(S_configs_last[10000,:,:], cmap="hot", interpolation="nearest")
 
 
 # code to test partial wang-landau
