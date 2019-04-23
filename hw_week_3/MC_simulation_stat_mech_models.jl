@@ -108,7 +108,7 @@ function metroplis(S_start, iter, J, β)
         # print info
         if mod(i,10000) == 0
             @printf "-----------------------------------------------------------------\n"
-            @printf "Iter: %f\n" i
+            @printf "Iter: %f.0\n" i
             @printf "Percentage done: %.2f %%\n" i/iter*100
         end
 
@@ -151,11 +151,14 @@ iter = 200000 # nbr of MC interstions
 S_configs, energy_vec, a_vec = @time metroplis(S_start, iter, J, β)
 
 # compute avg acc prob
-@printf "Avg. acc. prob.: %f\n" sum(a_vec)/iter
+@printf "Avg. acc. prob.: %.2f %%\n" sum(a_vec)/iter*100
 
 # plotting
-PyPlot.figure()
+PyPlot.figure(figsize=(8,5))
 PyPlot.plot(1:iter, energy_vec)
+PyPlot.xlabel("Iteration")
+PyPlot.ylabel("Energy")
+PyPlot.savefig("hw_week_3/fig/energy_vs_iter.eps", format="eps", dpi=1000)
 
 iter_plot = floor.(Int,LinRange(1,iter,100))
 
@@ -166,23 +169,32 @@ for i = iter_plot
     PyPlot.xlabel(i)
 end
 
-PyPlot.figure()
+PyPlot.figure(figsize=(8,12))
+
+PyPlot.subplot(3,2,1)
 PyPlot.imshow(S_configs[1,:,:], cmap="hot", interpolation="nearest")
+PyPlot.xlabel(1)
 
-PyPlot.figure()
+PyPlot.subplot(3,2,2)
 PyPlot.imshow(S_configs[1000,:,:], cmap="hot", interpolation="nearest")
+PyPlot.xlabel(1000)
 
-PyPlot.figure()
+PyPlot.subplot(3,2,3)
 PyPlot.imshow(S_configs[10000,:,:], cmap="hot", interpolation="nearest")
+PyPlot.xlabel(10000)
 
-PyPlot.figure()
+PyPlot.subplot(3,2,4)
 PyPlot.imshow(S_configs[100000,:,:], cmap="hot", interpolation="nearest")
+PyPlot.xlabel(100000)
 
-PyPlot.figure()
+PyPlot.subplot(3,2,5)
 PyPlot.imshow(S_configs[150000,:,:], cmap="hot", interpolation="nearest")
+PyPlot.xlabel(150000)
 
-PyPlot.figure()
+PyPlot.subplot(3,2,6)
 PyPlot.imshow(S_configs[200000,:,:], cmap="hot", interpolation="nearest")
+PyPlot.xlabel(200000)
+PyPlot.savefig("hw_week_3/fig/config_conv.eps", format="eps", dpi=1000)
 
 ################################################################################
 # Exercise: Computing the density of states for the Potts model in 2D with q = 10
