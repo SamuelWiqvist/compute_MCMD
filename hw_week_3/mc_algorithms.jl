@@ -1,18 +1,6 @@
-using PyPlot
-using Printf
-
-
 ################################################################################
-# Warmup: simulate the Ising model using the Metroplis algorithm
+# algorithms for the Isign model
 ################################################################################
-
-# generate start condiguration for stat S
-dims = 100
-S_start = zeros(dims,dims)
-map!(x -> x = rand([1,-1]), S_start, S_start)
-
-PyPlot.figure()
-PyPlot.imshow(S_start, cmap="hot", interpolation="nearest")
 
 # the energy function for the ising model
 function H_ising(S, J)
@@ -100,6 +88,12 @@ function metroplis(S_start, iter, J, β)
 
     for i = 2:iter
 
+        # print info
+        @printf "-----------------------------------------------------------------\n"
+        @printf "Iter: %f\n" i
+        @printf "Percentage done: %f.2 %%\n" i/iter*100
+
+
         S_update = S_configs[i-1,:,:] # select state to flip at random
         S_flip = rand(1:nbr_stats) # flip state
         S_update[S_flip] = -1*S_update[S_flip] # set prop config
@@ -130,62 +124,11 @@ function metroplis(S_start, iter, J, β)
 
 end
 
-# set system parameters
-J = 0.5 # interaction strength (we have the same interaction strength for all states)
-β = 20 # tempering
-iter = 200000 # nbr of MC interstions
-
-# run Metroplis algorithm
-S_configs, energy_vec, a_vec = @time metroplis(S_start, iter, J, β)
-
-# compute avg acc prob
-sum(a_vec)/iter
-
-# plotting
-PyPlot.figure()
-PyPlot.plot(1:iter, energy_vec)
-
-iter_plot = floor.(Int,LinRange(1,iter,100))
-
-PyPlot.figure()
-for i = iter_plot
-    sleep(0.001)
-    PyPlot.imshow(S_configs[i,:,:], cmap="hot", interpolation="nearest")
-    PyPlot.xlabel(i)
-end
-
-PyPlot.figure()
-PyPlot.imshow(S_configs[1,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs[1000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs[10000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs[100000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs[150000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs[200000,:,:], cmap="hot", interpolation="nearest")
-
 ################################################################################
-# Exercise: Computing the density of states for the Potts model in 2D with q = 10
+# algorithms for the Potts model
 ################################################################################
 
 
-# generate start condiguration for stat S
-dims = 100
-q = 10
-S_start = zeros(dims,dims)
-map!(x -> x = rand(1:q), S_start, S_start)
-
-PyPlot.figure()
-PyPlot.imshow(S_start,cmap="hot", interpolation="nearest")
-PyPlot.colorbar()
 
 # the energy function for the ising model
 function H_potts(S, J)
@@ -374,110 +317,3 @@ function wang_landau(nbr_reps,iter, J, q, f, dims = 100)
     return g_save, f_save, S_configs_last
 
 end
-
-
-# run Wang-Landau algorithm
-
-J = 1 # interaction strength (we have the same interaction strength for all states)
-iter = 10000 # nbr of MC iterations 
-f = exp(1)
-nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
-q = 10 # spins
-
-g_save, f_save, S_configs_last = @time wang_landau(nbr_reps, iter, J, q, f)
-
-
-PyPlot.figure()
-PyPlot.plot(f_save)
-PyPlot.title("Scaling")
-
-
-PyPlot.figure()
-
-for i = 1:size(g_save,1)
-
-    g_tilde = g_save[i,:,:]
-
-    # plot g function
-    energy = unique(g_tilde[2,:])
-    g = zeros(length(energy))
-
-
-    for i = 1:length(energy)
-
-        idx = findlast(x -> x == energy[i], g_tilde[2,:])
-        g[i] = g_tilde[1,idx]
-
-    end
-
-
-    g = g/sum(g)
-
-    PyPlot.subplot(13,2,i)
-    PyPlot.plot(energy, g, "*-")
-    PyPlot.title(f_save[i])
-
-end
-
-
-
-
-for i = size(g_save,1)-4:size(g_save,1)
-
-    g_tilde = g_save[i,:,:]
-
-    # plot g function
-    energy = unique(g_tilde[2,:])
-    g = zeros(length(energy))
-
-
-    for i = 1:length(energy)
-
-        idx = findlast(x -> x == energy[i], g_tilde[2,:])
-        g[i] = g_tilde[1,idx]
-
-    end
-
-    g = g/sum(g)
-
-
-    PyPlot.figure()
-    PyPlot.plot(energy, g, "*-")
-    PyPlot.title(f_save[i])
-
-
-end
-
-
-iter_plot = floor.(Int,LinRange(1,iter,100))
-
-PyPlot.figure()
-for i = iter_plot
-    sleep(0.001)
-    PyPlot.imshow(S_configs_last[i,:,:], cmap="hot", interpolation="nearest")
-    PyPlot.xlabel(i)
-end
-
-
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[1,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[1000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[2000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[5000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[10000,:,:], cmap="hot", interpolation="nearest")
-
-
-# code to test partial wang-landau
-# run algorithm
-#S_start = zeros(dims,dims)
-#S_start = map!(x -> x = rand(1:q), S_start, S_start)
-#S_configs, g_tilde, a_vec = @time wang_landau_one_iteration(S_start, iter, J, q, t)
