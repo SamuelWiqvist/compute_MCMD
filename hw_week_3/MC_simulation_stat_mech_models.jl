@@ -1,3 +1,5 @@
+# load packages
+
 using PyPlot
 using Printf
 
@@ -13,6 +15,7 @@ map!(x -> x = rand([1,-1]), S_start, S_start)
 
 PyPlot.figure()
 PyPlot.imshow(S_start, cmap="hot", interpolation="nearest")
+PyPlot.savefig("hw_week_3/fig/ising_start_config.eps", format="eps", dpi=1000)
 
 # the energy function for the ising model
 function H_ising(S, J)
@@ -88,6 +91,8 @@ end
 # metroplis algorithm to simulate the ising model
 function metroplis(S_start, iter, J, β)
 
+    @printf "Starting Metoplis algorithm\n"
+
     nbr_stats = length(S_start) # set up
     S_configs = zeros(iter, size(S_start,1),size(S_start,2))
     a_vec = zeros(iter)
@@ -100,11 +105,18 @@ function metroplis(S_start, iter, J, β)
 
     for i = 2:iter
 
+        # print info
+        if mod(i,10000) == 0
+            @printf "-----------------------------------------------------------------\n"
+            @printf "Iter: %f\n" i
+            @printf "Percentage done: %.2f %%\n" i/iter*100
+        end
+
         S_update = S_configs[i-1,:,:] # select state to flip at random
         S_flip = rand(1:nbr_stats) # flip state
         S_update[S_flip] = -1*S_update[S_flip] # set prop config
 
-        H_new = H(S_update,J) # compute energy for prop config
+        H_new = H_ising(S_update,J) # compute energy for prop config
 
         # compute acc prob
         if H_new > H_old
@@ -139,7 +151,7 @@ iter = 200000 # nbr of MC interstions
 S_configs, energy_vec, a_vec = @time metroplis(S_start, iter, J, β)
 
 # compute avg acc prob
-sum(a_vec)/iter
+@printf "Avg. acc. prob.: %f\n" sum(a_vec)/iter
 
 # plotting
 PyPlot.figure()
@@ -379,7 +391,7 @@ end
 # run Wang-Landau algorithm
 
 J = 1 # interaction strength (we have the same interaction strength for all states)
-iter = 10000 # nbr of MC iterations 
+iter = 10000 # nbr of MC iterations
 f = exp(1)
 nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
 q = 10 # spins

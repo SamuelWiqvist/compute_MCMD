@@ -1,10 +1,7 @@
-# the gitignore file
-
-#*.err
-#*.out
-
+*.jlprof
 *.csv
-*.ept
-*.eps
 *.png
 *.pdf
+*.eps
+*.tar.gz
+.Rproj.user
