@@ -4,6 +4,13 @@ using PyPlot
 using Printf
 using LaTeXStrings
 
+# TODO
+# 1) fix sum where the first sum is over pairs of adjacent spins (every pair is counted once)
+# 2) set parameters to resnoable avleus
+# 3) rerun
+
+# TODO
+# 1) why do the results differ so much for different runs?
 
 ################################################################################
 # Warmup: simulate the Ising model using the Metroplis algorithm
@@ -28,59 +35,59 @@ function H_ising(S, J)
 
             # nearest neighbors for intearior states
             if i > 1 && j > 1 && i < size(S,1) && j < size(S,2)
-                energy= energy + S[i,j]*S[i+1,j]
-                energy= energy + S[i,j]*S[i-1,j]
-                energy= energy + S[i,j]*S[i,j+1]
-                energy= energy + S[i,j]*S[i,j-1]
+                energy = energy + S[i,j]*S[i+1,j]
+                energy = energy + S[i,j]*S[i-1,j]
+                energy = energy + S[i,j]*S[i,j+1]
+                energy = energy + S[i,j]*S[i,j-1]
             end
 
             # nearest neighbors for corner in first column
             if i == 1 && j == 1
-                energy= energy + S[i,j]*S[i,j+1]
-                energy= energy + S[i,j]*S[i+1,j]
+                energy = energy + S[i,j]*S[i,j+1]
+                energy = energy + S[i,j]*S[i+1,j]
             end
 
             if i == size(S,1) && j == 1
-                energy= energy + S[i,j]*S[i,j+1]
-                energy= energy + S[i,j]*S[i-1,j]
+                energy = energy + S[i,j]*S[i,j+1]
+                energy = energy + S[i,j]*S[i-1,j]
             end
 
             if i == 1 && j == size(S,2)
-                energy= energy + S[i,j]*S[i,j-1]
-                energy= energy + S[i,j]*S[i+1,j]
+                energy = energy + S[i,j]*S[i,j-1]
+                energy = energy + S[i,j]*S[i+1,j]
             end
 
             if i == size(S,1) && j == size(S,2)
-                energy= energy + S[i,j]*S[i,j-1]
-                energy= energy + S[i,j]*S[i-1,j]
+                energy = energy + S[i,j]*S[i,j-1]
+                energy = energy + S[i,j]*S[i-1,j]
             end
 
             # nearest neighbors for states in first column
             if i == 1 && j > 1 && j <= size(S,2)-1
-                energy= energy + S[i,j]*S[i,j+1]
-                energy= energy + S[i,j]*S[i+1,j]
-                energy= energy + S[i,j]*S[i,j-1]
+                energy = energy + S[i,j]*S[i,j+1]
+                energy = energy + S[i,j]*S[i+1,j]
+                energy = energy + S[i,j]*S[i,j-1]
             end
 
             # nearest neighbors for states in last column
             if i == size(S,1) && j > 1 && j <= size(S,2)-1
-                energy= energy + S[i,j]*S[i,j+1]
-                energy= energy + S[i,j]*S[i-1,j]
-                energy= energy + S[i,j]*S[i,j-1]
+                energy = energy + S[i,j]*S[i,j+1]
+                energy = energy + S[i,j]*S[i-1,j]
+                energy = energy + S[i,j]*S[i,j-1]
             end
 
             # nearest neighbors for states in first row
             if j == 1 && i > 1 && i <= size(S,1)-1
-                energy= energy + S[i,j]*S[i,j+1]
-                energy= energy + S[i,j]*S[i-1,j]
-                energy= energy + S[i,j]*S[i+1,j]
+                energy = energy + S[i,j]*S[i,j+1]
+                energy = energy + S[i,j]*S[i-1,j]
+                energy = energy + S[i,j]*S[i+1,j]
             end
 
             # nearest neighbors for states in first last
             if j == size(S,2) && i > 1 && i <= size(S,1)-1
-                energy= energy + S[i,j]*S[i,j-1]
-                energy= energy + S[i,j]*S[i-1,j]
-                energy= energy + S[i,j]*S[i+1,j]
+                energy = energy + S[i,j]*S[i,j-1]
+                energy = energy + S[i,j]*S[i-1,j]
+                energy = energy + S[i,j]*S[i+1,j]
             end
          end
     end
@@ -109,7 +116,7 @@ function metroplis(S_start, iter, J, β)
         # print info
         if mod(i,10000) == 0
             @printf "-----------------------------------------------------------------\n"
-            @printf "Iter: %f.0\n" i
+            @printf "Iter: %0.f\n" i
             @printf "Percentage done: %.2f %%\n" i/iter*100
         end
 
@@ -211,59 +218,59 @@ function H_potts(S, J)
 
             # nearest neighbors for intearior states
             if i > 1 && j > 1 && i < size(S,1) && j < size(S,2)
-                energy= energy + δ(S[i,j],S[i+1,j])
-                energy= energy + δ(S[i,j],S[i-1,j])
-                energy= energy + δ(S[i,j],S[i,j+1])
-                energy= energy + δ(S[i,j],S[i,j-1])
+                energy = energy + δ(S[i,j],S[i+1,j])
+                energy = energy + δ(S[i,j],S[i-1,j])
+                energy = energy + δ(S[i,j],S[i,j+1])
+                energy = energy + δ(S[i,j],S[i,j-1])
             end
 
             # nearest neighbors for corner in first column
             if i == 1 && j == 1
-                energy= energy + δ(S[i,j],S[i,j+1])
-                energy= energy + δ(S[i,j],S[i+1,j])
+                energy = energy + δ(S[i,j],S[i,j+1])
+                energy = energy + δ(S[i,j],S[i+1,j])
             end
 
             if i == size(S,1) && j == 1
-                energy= energy + δ(S[i,j],S[i,j+1])
-                energy= energy + δ(S[i,j],S[i-1,j])
+                energy = energy + δ(S[i,j],S[i,j+1])
+                energy = energy + δ(S[i,j],S[i-1,j])
             end
 
             if i == 1 && j == size(S,2)
-                energy= energy + δ(S[i,j],S[i,j-1])
-                energy= energy + δ(S[i,j],S[i+1,j])
+                energy = energy + δ(S[i,j],S[i,j-1])
+                energy = energy + δ(S[i,j],S[i+1,j])
             end
 
             if i == size(S,1) && j == size(S,2)
-                energy= energy + δ(S[i,j],S[i,j-1])
-                energy= energy + δ(S[i,j],S[i-1,j])
+                energy = energy + δ(S[i,j],S[i,j-1])
+                energy = energy + δ(S[i,j],S[i-1,j])
             end
 
             # nearest neighbors for states in first column
             if i == 1 && j > 1 && j <= size(S,2)-1
-                energy= energy + δ(S[i,j],S[i,j+1])
-                energy= energy + δ(S[i,j],S[i+1,j])
-                energy= energy + δ(S[i,j],S[i,j-1])
+                energy = energy + δ(S[i,j],S[i,j+1])
+                energy = energy + δ(S[i,j],S[i+1,j])
+                energy = energy + δ(S[i,j],S[i,j-1])
             end
 
             # nearest neighbors for states in last column
             if i == size(S,1) && j > 1 && j <= size(S,2)-1
-                energy= energy + δ(S[i,j],S[i,j+1])
-                energy= energy + δ(S[i,j],S[i-1,j])
-                energy= energy + δ(S[i,j],S[i,j-1])
+                energy = energy + δ(S[i,j],S[i,j+1])
+                energy = energy + δ(S[i,j],S[i-1,j])
+                energy = energy + δ(S[i,j],S[i,j-1])
             end
 
             # nearest neighbors for states in first row
             if j == 1 && i > 1 && i <= size(S,1)-1
-                energy= energy + δ(S[i,j],S[i,j+1])
-                energy= energy + δ(S[i,j],S[i-1,j])
-                energy= energy + δ(S[i,j],S[i+1,j])
+                energy = energy + δ(S[i,j],S[i,j+1])
+                energy = energy + δ(S[i,j],S[i-1,j])
+                energy = energy + δ(S[i,j],S[i+1,j])
             end
 
             # nearest neighbors for states in first last
             if j == size(S,2) && i > 1 && i <= size(S,1)-1
-                energy= energy + δ(S[i,j],S[i,j-1])
-                energy= energy + δ(S[i,j],S[i-1,j])
-                energy= energy + δ(S[i,j],S[i+1,j])
+                energy = energy + δ(S[i,j],S[i,j-1])
+                energy = energy + δ(S[i,j],S[i-1,j])
+                energy = energy + δ(S[i,j],S[i+1,j])
             end
          end
     end
@@ -284,21 +291,36 @@ function δ(s, s_star)
 end
 
 # Wang-Landau algorithm with one fixed f value
-function wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E)
+function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
 
     nbr_stats = length(S_start) # set up
-    S_configs = zeros(iter, size(S_start,1),size(S_start,2))
-    a_vec = zeros(iter)
-    E_vec = zeros(iter)
+    S_configs = zeros(iter_max, size(S_start,1),size(S_start,2))
+    a_vec = zeros(iter_max)
+    E_vec = zeros(iter_max)
 
     S_configs[1,:,:] = S_start # first iteration
 
     a_vec[1] = 1
     E_vec[1] = H_potts(S_start,J)
 
+    # update g_tilde for first iteration
+    g_update_idx = findlast(x -> x == E_vec[1], E)
+    if typeof(g_update_idx) == Nothing
+        g_update = 1
+        append!(E,[E_vec[1]])
+        append!(g_tilde,[f*g_update])
+    else
+        g_update = g_tilde[g_update_idx[1]]
+        g_tilde[g_update_idx[1]] = f*g_update
+    end
+
+
     α_log = log(1)
 
-    for i = 2:iter
+    min_energy = 0
+    max_energy = 0
+
+    for i = 2:iter_max
 
         # ordinary update
         S_update = S_configs[i-1,:,:] # select state to flip at random
@@ -336,15 +358,37 @@ function wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E)
         if typeof(g_update_idx) == Nothing
             g_update = 1
             append!(E,[E_vec[i]])
-            append!(g_tilde,[g_update])
+            append!(g_tilde,[f*g_update])
         else
             g_update = g_tilde[g_update_idx[1]]
             g_tilde[g_update_idx[1]] = f*g_update
         end
 
+        if i == 1000
+
+            min_energy = minimum(E_vec[1:i])
+            max_energy = maximum(E_vec[1:i])
+
+
+        end
+
+        if mod(i,100) == 0 && i > 1000
+
+
+            nbr_min = length(findall(x -> x <= min_energy, E_vec[1:i]))
+            nbr_max = length(findall(x -> x >= max_energy, E_vec[1:i]))
+
+            if nbr_min > 5 && nbr_max > 5
+                return S_configs[1:i,:,:], a_vec[1:i], E_vec[1:i], i
+            end
+
+
+        end
+
+
     end
 
-    return S_configs, a_vec, E_vec
+    return S_configs, a_vec, E_vec, iter_max
 
 end
 
@@ -360,15 +404,16 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
 
     for i = 1:nbr_reps
 
-        S_configs, a_vec = wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E)
+        S_configs, a_vec, E_vec, iter_done = wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E)
 
         f_save[i] = f
 
         # print info
         @printf "-----------------------------------------------------------------\n"
-        @printf "Iter: %f\n" i
-        @printf "f: %f.0\n" f
-        @printf "Acc. rate: %f.2 %%\n" sum(a_vec)/iter*100
+        @printf "Iter: %.0f\n" i
+        @printf "f: %f\n" f
+        @printf "MCMC iterations: %.0f\n" iter_done
+        @printf "Acc. rate: %.2f %%\n" sum(a_vec)/iter_done*100
 
         #=
         PyPlot.figure()
@@ -381,7 +426,8 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
         # update t
         f = sqrt(f)
 
-        S_start = S_configs[end,:,:]
+        #S_start = S_configs[end,:,:]
+        map!(x -> x = rand(1:q), S_start, S_start)
 
         if i == nbr_reps
             S_configs_last = S_configs
@@ -398,10 +444,10 @@ end
 
 # algorithm settings
 J = 0.5 # interaction strength (we have the same interaction strength for all states)
-iter = 1000 # nbr of MC iterations
+iter = 50000 # nbr of MC iterations
 f = exp(1)
 nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
-q = 10 # spins
+q = 5 # spins
 
 
 # generate start condiguration for stat S
@@ -409,17 +455,57 @@ dims = 100
 S_start = zeros(dims,dims)
 map!(x -> x = rand(1:q), S_start, S_start)
 
+# init g_tilde and E vectors
+g_tilde = [1.]
+E = [H_potts(S_start,J)]
+
 PyPlot.figure()
 PyPlot.imshow(S_start,cmap="hot", interpolation="nearest")
 PyPlot.colorbar()
 PyPlot.savefig("hw_week_3/fig/potts_start_config.eps", format="eps", dpi=1000)
 
 
-# init g_tilde and E vectors
-g_tilde = [1.]
-E = [H_potts(S_start,J)]
 
 f_save, S_configs_last = @time wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
+
+
+
+PyPlot.figure()
+PyPlot.plot(E, g_tilde, "*")
+PyPlot.xlabel("Energy")
+PyPlot.ylabel(L"\tilde{g}")
+PyPlot.savefig("hw_week_3/fig/potts_g_tilde_final.eps", format="eps", dpi=1000)
+
+
+
+
+PyPlot.figure()
+PyPlot.plot(f_save)
+PyPlot.xlabel("Iteration")
+PyPlot.ylabel(L"f")
+PyPlot.savefig("hw_week_3/fig/potts_f_vs_iter.eps", format="eps", dpi=1000)
+
+
+
+T = 1
+
+P_T = exp.(log.(g_tilde).*-E/T)
+
+exp.(log.(g_tilde))
+
+exp.(-E/T)
+
+
+
+E
+
+
+PyPlot.figure()
+PyPlot.plot(E, P_T, "*")
+PyPlot.xlabel("Energy")
+PyPlot.ylabel(L"\tilde{g}")
+PyPlot.savefig("hw_week_3/fig/potts_g_tilde_final.eps", format="eps", dpi=1000)
+
 
 
 g_tilde
@@ -430,22 +516,15 @@ E
 S_configs, a_vec, E_vec = wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E)
 
 
-a_vec
-
-
-
-E_vec
-
-
+PyPlot.figure()
 nbr_in_bins, bins, plotobj = PyPlot.plt[:hist](E_vec,100)
 
-minimum(nbr_in_bins)
-maximum(nbr_in_bins)
+diff_min_max_in_min = maximum(nbr_in_bins) - minimum(nbr_in_bins)
 
 
 
 PyPlot.figure()
-PyPlot.plot(E, g_tilde, "*-")
+PyPlot.plot(E, g_tilde, "*")
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"\tilde{g}")
 PyPlot.savefig("hw_week_3/fig/potts_g_tilde_final.eps", format="eps", dpi=1000)
