@@ -30,65 +30,12 @@ function H_ising(S, J)
 
     energy = 0
 
-    for i = 1:size(S,1) # column
-        for j = 1:size(S,2) # row
+    for i = 1:size(S,1)-1 # column
+        for j = 1:size(S,2)-1 # row
 
-            # nearest neighbors for intearior states
-            if i > 1 && j > 1 && i < size(S,1) && j < size(S,2)
-                energy = energy + S[i,j]*S[i+1,j]
-                energy = energy + S[i,j]*S[i-1,j]
-                energy = energy + S[i,j]*S[i,j+1]
-                energy = energy + S[i,j]*S[i,j-1]
-            end
+            energy = energy + S[i,j]*S[i+1,j]
+            energy = energy + S[i,j]*S[i,j+1]
 
-            # nearest neighbors for corner in first column
-            if i == 1 && j == 1
-                energy = energy + S[i,j]*S[i,j+1]
-                energy = energy + S[i,j]*S[i+1,j]
-            end
-
-            if i == size(S,1) && j == 1
-                energy = energy + S[i,j]*S[i,j+1]
-                energy = energy + S[i,j]*S[i-1,j]
-            end
-
-            if i == 1 && j == size(S,2)
-                energy = energy + S[i,j]*S[i,j-1]
-                energy = energy + S[i,j]*S[i+1,j]
-            end
-
-            if i == size(S,1) && j == size(S,2)
-                energy = energy + S[i,j]*S[i,j-1]
-                energy = energy + S[i,j]*S[i-1,j]
-            end
-
-            # nearest neighbors for states in first column
-            if i == 1 && j > 1 && j <= size(S,2)-1
-                energy = energy + S[i,j]*S[i,j+1]
-                energy = energy + S[i,j]*S[i+1,j]
-                energy = energy + S[i,j]*S[i,j-1]
-            end
-
-            # nearest neighbors for states in last column
-            if i == size(S,1) && j > 1 && j <= size(S,2)-1
-                energy = energy + S[i,j]*S[i,j+1]
-                energy = energy + S[i,j]*S[i-1,j]
-                energy = energy + S[i,j]*S[i,j-1]
-            end
-
-            # nearest neighbors for states in first row
-            if j == 1 && i > 1 && i <= size(S,1)-1
-                energy = energy + S[i,j]*S[i,j+1]
-                energy = energy + S[i,j]*S[i-1,j]
-                energy = energy + S[i,j]*S[i+1,j]
-            end
-
-            # nearest neighbors for states in first last
-            if j == size(S,2) && i > 1 && i <= size(S,1)-1
-                energy = energy + S[i,j]*S[i,j-1]
-                energy = energy + S[i,j]*S[i-1,j]
-                energy = energy + S[i,j]*S[i+1,j]
-            end
          end
     end
 
@@ -213,65 +160,12 @@ function H_potts(S, J)
 
     energy = 0
 
-    for i = 1:size(S,1) # column
-        for j = 1:size(S,2) # row
+    for i = 1:size(S,1)-1 # column
+        for j = 1:size(S,2)-1 # row
+            
+            energy = energy + δ(S[i,j], S[i+1,j])
+            energy = energy + δ(S[i,j], S[i,j+1])
 
-            # nearest neighbors for intearior states
-            if i > 1 && j > 1 && i < size(S,1) && j < size(S,2)
-                energy = energy + δ(S[i,j],S[i+1,j])
-                energy = energy + δ(S[i,j],S[i-1,j])
-                energy = energy + δ(S[i,j],S[i,j+1])
-                energy = energy + δ(S[i,j],S[i,j-1])
-            end
-
-            # nearest neighbors for corner in first column
-            if i == 1 && j == 1
-                energy = energy + δ(S[i,j],S[i,j+1])
-                energy = energy + δ(S[i,j],S[i+1,j])
-            end
-
-            if i == size(S,1) && j == 1
-                energy = energy + δ(S[i,j],S[i,j+1])
-                energy = energy + δ(S[i,j],S[i-1,j])
-            end
-
-            if i == 1 && j == size(S,2)
-                energy = energy + δ(S[i,j],S[i,j-1])
-                energy = energy + δ(S[i,j],S[i+1,j])
-            end
-
-            if i == size(S,1) && j == size(S,2)
-                energy = energy + δ(S[i,j],S[i,j-1])
-                energy = energy + δ(S[i,j],S[i-1,j])
-            end
-
-            # nearest neighbors for states in first column
-            if i == 1 && j > 1 && j <= size(S,2)-1
-                energy = energy + δ(S[i,j],S[i,j+1])
-                energy = energy + δ(S[i,j],S[i+1,j])
-                energy = energy + δ(S[i,j],S[i,j-1])
-            end
-
-            # nearest neighbors for states in last column
-            if i == size(S,1) && j > 1 && j <= size(S,2)-1
-                energy = energy + δ(S[i,j],S[i,j+1])
-                energy = energy + δ(S[i,j],S[i-1,j])
-                energy = energy + δ(S[i,j],S[i,j-1])
-            end
-
-            # nearest neighbors for states in first row
-            if j == 1 && i > 1 && i <= size(S,1)-1
-                energy = energy + δ(S[i,j],S[i,j+1])
-                energy = energy + δ(S[i,j],S[i-1,j])
-                energy = energy + δ(S[i,j],S[i+1,j])
-            end
-
-            # nearest neighbors for states in first last
-            if j == size(S,2) && i > 1 && i <= size(S,1)-1
-                energy = energy + δ(S[i,j],S[i,j-1])
-                energy = energy + δ(S[i,j],S[i-1,j])
-                energy = energy + δ(S[i,j],S[i+1,j])
-            end
          end
     end
 
