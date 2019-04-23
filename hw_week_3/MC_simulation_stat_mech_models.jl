@@ -5,7 +5,7 @@ using Printf
 using LaTeXStrings
 
 # TODO
-# 1) fix sum where the first sum is over pairs of adjacent spins (every pair is counted once)
+# 1) fix so that we count all edgets 
 # 2) set parameters to resnoable avleus
 # 3) rerun
 
@@ -26,7 +26,7 @@ PyPlot.imshow(S_start, cmap="hot", interpolation="nearest")
 PyPlot.savefig("hw_week_3/fig/ising_start_config.eps", format="eps", dpi=1000)
 
 # the energy function for the ising model
-function H_ising(S, J)
+function E_ising(S, J)
 
     energy = 0
 
@@ -38,6 +38,8 @@ function H_ising(S, J)
 
          end
     end
+
+    i =
 
     return -J*energy
 
@@ -54,8 +56,8 @@ function metroplis(S_start, iter, J, β)
     energy_vec = zeros(iter)
     S_configs[1,:,:] = S_start
 
-    H_old = H_ising(S_configs[1,:,:], J) # first iteration
-    energy_vec[1] = H_old
+    E_old = E_ising(S_configs[1,:,:], J) # first iteration
+    energy_vec[1] = E_old
     α_log = log(1)
 
     for i = 2:iter
@@ -71,23 +73,23 @@ function metroplis(S_start, iter, J, β)
         S_flip = rand(1:nbr_stats) # flip state
         S_update[S_flip] = -1*S_update[S_flip] # set prop config
 
-        H_new = H_ising(S_update,J) # compute energy for prop config
+        E_new = E_ising(S_update,J) # compute energy for prop config
 
         # compute acc prob
-        if H_new > H_old
-            α_log = -β*(H_new-H_old)
+        if E_new > E_old
+            α_log = -β*(E_new-E_old)
         else
             α_log = log(1)
         end
 
         if log(rand()) < α_log # accapt new config
             S_configs[i,:,:] = S_update
-            H_old = H_new
+            E_old = E_new
             a_vec[i] = 1
-            energy_vec[i] = H_new
+            energy_vec[i] = E_new
         else
             S_configs[i,:,:] = S_configs[i-1,:,:] # store old config
-            energy_vec[i] = H_old
+            energy_vec[i] = E_old
 
         end
 
@@ -162,7 +164,7 @@ function H_potts(S, J)
 
     for i = 1:size(S,1)-1 # column
         for j = 1:size(S,2)-1 # row
-            
+
             energy = energy + δ(S[i,j], S[i+1,j])
             energy = energy + δ(S[i,j], S[i,j+1])
 
@@ -221,10 +223,10 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
         S_flip = rand(1:nbr_stats) # flip state
         S_update[S_flip] = rand(1:q) # set prop config
 
-        H_new = H_potts(S_update,J) # compute energy for prop config
+        E_new = H_potts(S_update,J) # compute energy for prop config
 
         # see if we have curent energy
-        g_tilde_prop_idx = findlast(x -> x == H_new, E)
+        g_tilde_prop_idx = findlast(x -> x == E_new, E)
 
         if typeof(g_tilde_prop_idx) == Nothing
             g_tilde_prop = 1
@@ -239,7 +241,7 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
 
         if log(rand()) < min(0, α_log) # accapt new config
             S_configs[i,:,:] = S_update
-            E_vec[i] = H_new
+            E_vec[i] = E_new
             a_vec[i] = 1
         else
             S_configs[i,:,:] = S_configs[i-1,:,:] # store old config
@@ -389,6 +391,7 @@ exp.(log.(g_tilde))
 
 exp.(-E/T)
 
+-E
 
 
 E
