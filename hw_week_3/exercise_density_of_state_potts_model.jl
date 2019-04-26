@@ -208,11 +208,12 @@ end
 # run Wang-Landau algorithm
 
 # algorithm settings
-J = 0.5 # interaction strength (we have the same interaction strength for all states)
+q = 10 # spins
+J = -(q/2)*0.5 # interaction strength (we have the same interaction strength for all states)
 iter = 50000 # nbr of MC iterations
 f = exp(1)
 nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
-q = 5 # spins
+
 
 
 # generate start condiguration for stat S
@@ -233,167 +234,22 @@ PyPlot.colorbar()
 
 f_save, S_configs_last = @time wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
 
-
-
 PyPlot.figure()
 PyPlot.plot(E, g_tilde, "*")
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"\tilde{g}")
-PyPlot.savefig("hw_week_3/fig/potts_g_tilde_final.eps", format="eps", dpi=1000)
-
-
-
+#PyPlot.savefig("hw_week_3/fig/potts_g_tilde_final.eps", format="eps", dpi=1000)
 
 PyPlot.figure()
 PyPlot.plot(f_save)
 PyPlot.xlabel("Iteration")
 PyPlot.ylabel(L"f")
-PyPlot.savefig("hw_week_3/fig/potts_f_vs_iter.eps", format="eps", dpi=1000)
+#PyPlot.savefig("hw_week_3/fig/potts_f_vs_iter.eps", format="eps", dpi=1000)
 
 
+T = 1000
 
-T = 1
-
-P_T = exp.(log.(g_tilde).*-E/T)
-
-exp.(log.(g_tilde))
-
-exp.(-E/T)
-
--E
-
-
-E
-
+P_T = exp.(log.(g_tilde).-E/T)
 
 PyPlot.figure()
 PyPlot.plot(E, P_T, "*")
-PyPlot.xlabel("Energy")
-PyPlot.ylabel(L"\tilde{g}")
-PyPlot.savefig("hw_week_3/fig/potts_g_tilde_final.eps", format="eps", dpi=1000)
-
-
-
-g_tilde
-
-E
-
-
-S_configs, a_vec, E_vec = wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E)
-
-
-PyPlot.figure()
-nbr_in_bins, bins, plotobj = PyPlot.plt[:hist](E_vec,100)
-
-diff_min_max_in_min = maximum(nbr_in_bins) - minimum(nbr_in_bins)
-
-
-
-PyPlot.figure()
-PyPlot.plot(E, g_tilde, "*")
-PyPlot.xlabel("Energy")
-PyPlot.ylabel(L"\tilde{g}")
-PyPlot.savefig("hw_week_3/fig/potts_g_tilde_final.eps", format="eps", dpi=1000)
-
-
-
-
-PyPlot.figure()
-PyPlot.plot(f_save)
-PyPlot.xlabel("Iteration")
-PyPlot.ylabel(L"f")
-PyPlot.savefig("hw_week_3/fig/potts_f_vs_iter.eps", format="eps", dpi=1000)
-
-
-PyPlot.title("Scaling")
-
-
-PyPlot.figure()
-
-for i = 1:size(g_save,1)
-
-    g_tilde = g_save[i,:,:]
-
-    # plot g function
-    energy = unique(g_tilde[2,:])
-    g = zeros(length(energy))
-
-
-    for i = 1:length(energy)
-
-        idx = findlast(x -> x == energy[i], g_tilde[2,:])
-        g[i] = g_tilde[1,idx]
-
-    end
-
-
-    g = g/sum(g)
-
-    PyPlot.subplot(13,2,i)
-    PyPlot.plot(energy, g, "*-")
-    PyPlot.title(f_save[i])
-
-end
-
-
-
-
-for i = size(g_save,1)-4:size(g_save,1)
-
-    g_tilde = g_save[i,:,:]
-
-    # plot g function
-    energy = unique(g_tilde[2,:])
-    g = zeros(length(energy))
-
-
-    for i = 1:length(energy)
-
-        idx = findlast(x -> x == energy[i], g_tilde[2,:])
-        g[i] = g_tilde[1,idx]
-
-    end
-
-    g = g/sum(g)
-
-
-    PyPlot.figure()
-    PyPlot.plot(energy, g, "*-")
-    PyPlot.title(f_save[i])
-
-
-end
-
-
-iter_plot = floor.(Int,LinRange(1,iter,100))
-
-PyPlot.figure()
-for i = iter_plot
-    sleep(0.001)
-    PyPlot.imshow(S_configs_last[i,:,:], cmap="hot", interpolation="nearest")
-    PyPlot.xlabel(i)
-end
-
-
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[1,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[1000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[2000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[5000,:,:], cmap="hot", interpolation="nearest")
-
-PyPlot.figure()
-PyPlot.imshow(S_configs_last[10000,:,:], cmap="hot", interpolation="nearest")
-
-
-# code to test partial wang-landau
-# run algorithm
-#S_start = zeros(dims,dims)
-#S_start = map!(x -> x = rand(1:q), S_start, S_start)
-#S_configs, g_tilde, a_vec = @time wang_landau_one_iteration(S_start, iter, J, q, t)
