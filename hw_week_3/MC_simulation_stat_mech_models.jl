@@ -5,7 +5,7 @@ using Printf
 using LaTeXStrings
 
 # TODO
-# 1) fix so that we count all edgets 
+# 1) fix so that we count all edgets
 # 2) set parameters to resnoable avleus
 # 3) rerun
 
@@ -21,15 +21,12 @@ dims = 100
 S_start = zeros(dims,dims)
 map!(x -> x = rand([1,-1]), S_start, S_start)
 
-PyPlot.figure()
-PyPlot.imshow(S_start, cmap="hot", interpolation="nearest")
-PyPlot.savefig("hw_week_3/fig/ising_start_config.eps", format="eps", dpi=1000)
-
 # the energy function for the ising model
 function E_ising(S, J)
 
     energy = 0
 
+    # sum over pairs of adjacent spins
     for i = 1:size(S,1)-1 # column
         for j = 1:size(S,2)-1 # row
 
@@ -39,7 +36,23 @@ function E_ising(S, J)
          end
     end
 
-    i =
+    # last cloumn
+    for i = 1:size(S,1)-1 # column
+
+        j = size(S,2) # row
+        energy = energy + S[i,j]*S[i+1,j]
+
+    end
+
+
+    # last row
+    for j = 1:size(S,2)-1 # column
+
+        i = size(S,1) # row
+        energy = energy + S[i,j]*S[i,j+1]
+
+    end
+
 
     return -J*energy
 
@@ -115,7 +128,7 @@ PyPlot.figure(figsize=(8,5))
 PyPlot.plot(1:iter, energy_vec)
 PyPlot.xlabel("Iteration")
 PyPlot.ylabel("Energy")
-PyPlot.savefig("hw_week_3/fig/ising_energy_vs_iter.eps", format="eps", dpi=1000)
+#PyPlot.savefig("hw_week_3/fig/ising_energy_vs_iter.eps", format="eps", dpi=1000)
 
 iter_plot = floor.(Int,LinRange(1,iter,100))
 
@@ -130,28 +143,29 @@ PyPlot.figure(figsize=(8,12))
 
 PyPlot.subplot(3,2,1)
 PyPlot.imshow(S_configs[1,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel(1)
+PyPlot.xlabel("Iter. 1")
 
 PyPlot.subplot(3,2,2)
 PyPlot.imshow(S_configs[1000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel(1000)
+PyPlot.xlabel("Iter. 1000")
 
 PyPlot.subplot(3,2,3)
 PyPlot.imshow(S_configs[10000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel(10000)
+PyPlot.xlabel("Iter. 10000")
 
 PyPlot.subplot(3,2,4)
 PyPlot.imshow(S_configs[100000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel(100000)
+PyPlot.xlabel("Iter. 100000")
 
 PyPlot.subplot(3,2,5)
 PyPlot.imshow(S_configs[150000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel(150000)
+PyPlot.xlabel("Iter. 150000")
 
 PyPlot.subplot(3,2,6)
 PyPlot.imshow(S_configs[200000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel(200000)
-PyPlot.savefig("hw_week_3/fig/ising_config_conv.eps", format="eps", dpi=1000)
+PyPlot.xlabel("Iter. 200000")
+
+#PyPlot.savefig("hw_week_3/fig/ising_config_conv.png", format="png")
 
 ################################################################################
 # Exercise: Computing the density of states for the Potts model in 2D with q = 10
@@ -319,7 +333,7 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
         PyPlot.savefig("hw_week_3/fig/potts_g_tilde_iteration_"*string(i)*".eps", format="eps", dpi=1000)
         =#
 
-        # update t
+        # update f
         f = sqrt(f)
 
         #S_start = S_configs[end,:,:]
