@@ -13,38 +13,21 @@ function H_potts(S, J)
 
     energy = 0
 
-    nbr_adds = 0
-
-
     for i = 1:size(S,1)-1 # column
         for j = 1:size(S,2)-1 # row
 
             if i == 1  || j == 1
-                nbr_adds = nbr_adds + 2
-
-                println("---")
-                println([i,j])
-                println([i+1,j])
-                println([i,j+1])
 
                 energy = energy + δ(S[i,j], S[i+1,j])
                 energy = energy + δ(S[i,j], S[i,j+1])
 
             else
 
-                nbr_adds = nbr_adds + 4
-
-                println("---")
-                println([i,j])
-                println([i+1,j])
-                println([i-1,j])
-                println([i,j+1])
-                println([i,j-1])
-
                 energy = energy + δ(S[i,j], S[i+1,j])
                 energy = energy + δ(S[i,j], S[i-1,j])
                 energy = energy + δ(S[i,j], S[i,j+1])
                 energy = energy + δ(S[i,j], S[i,j-1])
+
             end
 
          end
@@ -54,15 +37,8 @@ function H_potts(S, J)
     # last cloumn
     for i = 1:size(S,1)-1 # column
 
-        nbr_adds = nbr_adds + 1
-
-        j = size(S,2) # row
-
-        println("---")
-        println([i,j])
-        println([i+1,j])
-
         energy = energy + δ(S[i,j], S[i+1,j])
+        energy = energy + δ(S[i,j], S[i,j-1])
 
     end
 
@@ -70,20 +46,10 @@ function H_potts(S, J)
     # last row
     for j = 1:size(S,2)-1 # column
 
-        nbr_adds = nbr_adds + 1
-
-        i = size(S,1) # row
-
-        println("---")
-        println([i,j])
-        println([i,j+1])
-
-
         energy = energy + δ(S[i,j], S[i,j+1])
+        energy = energy + δ(S[i,j], S[i-1,j])
 
     end
-
-    println(nbr_adds)
 
     return -J*energy
 

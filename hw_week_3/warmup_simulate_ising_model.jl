@@ -18,21 +18,32 @@ function E_ising(S, J)
 
     energy = 0
 
-    # sum over pairs of adjacent spins
     for i = 1:size(S,1)-1 # column
         for j = 1:size(S,2)-1 # row
 
-            energy = energy + S[i,j]*S[i+1,j]
-            energy = energy + S[i,j]*S[i,j+1]
+            if i == 1  || j == 1
+
+                energy = energy + S[i,j]*S[i+1,j]
+                energy = energy + S[i,j]*S[i,j+1]
+
+            else
+
+                energy = energy + S[i,j]*S[i+1,j]
+                energy = energy + S[i,j]*S[i-1,j]
+                energy = energy + S[i,j]*S[i,j+1]
+                energy = energy + S[i,j]*S[i,j-1]
+
+            end
 
          end
     end
 
+
     # last cloumn
     for i = 1:size(S,1)-1 # column
 
-        j = size(S,2) # row
         energy = energy + S[i,j]*S[i+1,j]
+        energy = energy + S[i,j]*S[i,j-1]
 
     end
 
@@ -40,8 +51,8 @@ function E_ising(S, J)
     # last row
     for j = 1:size(S,2)-1 # column
 
-        i = size(S,1) # row
         energy = energy + S[i,j]*S[i,j+1]
+        energy = energy + S[i,j]*S[i-1,j]
 
     end
 
