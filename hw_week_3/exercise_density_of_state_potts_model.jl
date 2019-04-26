@@ -24,9 +24,13 @@ function H_potts(S, J)
             else
 
                 energy = energy + δ(S[i,j], S[i+1,j])
-                energy = energy + δ(S[i,j], S[i-1,j])
                 energy = energy + δ(S[i,j], S[i,j+1])
-                energy = energy + δ(S[i,j], S[i,j-1])
+
+
+                #energy = energy + δ(S[i,j], S[i+1,j])
+                #energy = energy + δ(S[i,j], S[i-1,j])
+                #energy = energy + δ(S[i,j], S[i,j+1])
+                #energy = energy + δ(S[i,j], S[i,j-1])
 
             end
 
@@ -37,8 +41,10 @@ function H_potts(S, J)
     # last cloumn
     for i = 1:size(S,1)-1 # column
 
+        j = size(S,2)
+
         energy = energy + δ(S[i,j], S[i+1,j])
-        energy = energy + δ(S[i,j], S[i,j-1])
+        #energy = energy + δ(S[i,j], S[i,j-1])
 
     end
 
@@ -46,8 +52,10 @@ function H_potts(S, J)
     # last row
     for j = 1:size(S,2)-1 # column
 
+        i = size(S,2)
+
         energy = energy + δ(S[i,j], S[i,j+1])
-        energy = energy + δ(S[i,j], S[i-1,j])
+        #energy = energy + δ(S[i,j], S[i-1,j])
 
     end
 
@@ -294,10 +302,15 @@ PyPlot.semilogy(E, P_T, "*")
 
 println("----------------------")
 
+L = 3
 
-H_potts(zeros(3,3),1)
+H_potts(zeros(L,L),1)
 
--2*3*3
+-2*L*L
+
+
+L*L
+
 
 32-24
 
