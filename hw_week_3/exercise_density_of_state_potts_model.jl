@@ -9,54 +9,19 @@ using LaTeXStrings
 ################################################################################
 
 # the energy function for the ising model
+# code adaped from https://github.com/maxjkiss/q-state-potts-model
 function H_potts(S, J)
 
     energy = 0
+    L = size(S,1)
 
-    for i = 1:size(S,1)-1 # column
-        for j = 1:size(S,2)-1 # row
+    for i = 0:L-1 # column
+        for j = 0:L-1 # row
 
-            if i == 1  || j == 1
-
-                energy = energy + δ(S[i,j], S[i+1,j])
-                energy = energy + δ(S[i,j], S[i,j+1])
-
-            else
-
-                energy = energy + δ(S[i,j], S[i+1,j])
-                energy = energy + δ(S[i,j], S[i,j+1])
-
-
-                #energy = energy + δ(S[i,j], S[i+1,j])
-                #energy = energy + δ(S[i,j], S[i-1,j])
-                #energy = energy + δ(S[i,j], S[i,j+1])
-                #energy = energy + δ(S[i,j], S[i,j-1])
-
-            end
+            energy = energy + δ(S[i+1,j+1], S[mod(i+1,L)+1,j+1])
+            energy = energy + δ(S[i+1,j+1], S[i+1,mod(j+1,L)+1])
 
          end
-    end
-
-
-    # last cloumn
-    for i = 1:size(S,1)-1 # column
-
-        j = size(S,2)
-
-        energy = energy + δ(S[i,j], S[i+1,j])
-        #energy = energy + δ(S[i,j], S[i,j-1])
-
-    end
-
-
-    # last row
-    for j = 1:size(S,2)-1 # column
-
-        i = size(S,2)
-
-        energy = energy + δ(S[i,j], S[i,j+1])
-        #energy = energy + δ(S[i,j], S[i-1,j])
-
     end
 
     return -J*energy
@@ -223,6 +188,15 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
 
 end
 
+# test H_potts
+
+
+L = 60
+
+H_potts(zeros(L,L),1)
+
+-2*L*L
+
 
 # run Wang-Landau algorithm
 
@@ -233,13 +207,11 @@ iter = 50000 # nbr of MC iterations
 f = exp(1)
 nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
 
-
-
 # generate start condiguration for stat S
-dims = 100
-N = dims*dims
+L = 60
+N = L*L
 E_min = -2*N
-S_start = zeros(dims,dims)
+S_start = zeros(L,L)
 map!(x -> x = rand(1:q), S_start, S_start)
 
 # init g_tilde and E vectors

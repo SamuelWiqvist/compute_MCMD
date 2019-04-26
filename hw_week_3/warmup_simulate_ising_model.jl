@@ -14,52 +14,25 @@ S_start = zeros(dims,dims)
 map!(x -> x = rand([1,-1]), S_start, S_start)
 
 # the energy function for the ising model
+# code adaped from https://github.com/maxjkiss/q-state-potts-model
 function E_ising(S, J)
 
     energy = 0
+    L = size(S,1)
 
-    for i = 1:size(S,1)-1 # column
-        for j = 1:size(S,2)-1 # row
+    for i = 0:L-1 # column
+        for j = 0:L-1 # row
 
-            if i == 1  || j == 1
-
-                energy = energy + S[i,j]*S[i+1,j]
-                energy = energy + S[i,j]*S[i,j+1]
-
-            else
-
-                energy = energy + S[i,j]*S[i+1,j]
-                energy = energy + S[i,j]*S[i-1,j]
-                energy = energy + S[i,j]*S[i,j+1]
-                energy = energy + S[i,j]*S[i,j-1]
-
-            end
+            energy = energy + S[i+1,j+1]*S[mod(i+1,L)+1,j+1]
+            energy = energy + S[i+1,j+1]*S[i+1,mod(j+1,L)+1]
 
          end
     end
 
-
-    # last cloumn
-    for i = 1:size(S,1)-1 # column
-
-        energy = energy + S[i,j]*S[i+1,j]
-        energy = energy + S[i,j]*S[i,j-1]
-
-    end
-
-
-    # last row
-    for j = 1:size(S,2)-1 # column
-
-        energy = energy + S[i,j]*S[i,j+1]
-        energy = energy + S[i,j]*S[i-1,j]
-
-    end
-
-
     return -J*energy
 
 end
+
 
 # metroplis algorithm to simulate the ising model
 function metroplis(S_start, iter, J, β)
