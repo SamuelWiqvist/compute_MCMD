@@ -13,11 +13,39 @@ function H_potts(S, J)
 
     energy = 0
 
+    nbr_adds = 0
+
+
     for i = 1:size(S,1)-1 # column
         for j = 1:size(S,2)-1 # row
 
-            energy = energy + δ(S[i,j], S[i+1,j])
-            energy = energy + δ(S[i,j], S[i,j+1])
+            if i == 1  || j == 1
+                nbr_adds = nbr_adds + 2
+
+                println("---")
+                println([i,j])
+                println([i+1,j])
+                println([i,j+1])
+
+                energy = energy + δ(S[i,j], S[i+1,j])
+                energy = energy + δ(S[i,j], S[i,j+1])
+
+            else
+
+                nbr_adds = nbr_adds + 4
+
+                println("---")
+                println([i,j])
+                println([i+1,j])
+                println([i-1,j])
+                println([i,j+1])
+                println([i,j-1])
+
+                energy = energy + δ(S[i,j], S[i+1,j])
+                energy = energy + δ(S[i,j], S[i-1,j])
+                energy = energy + δ(S[i,j], S[i,j+1])
+                energy = energy + δ(S[i,j], S[i,j-1])
+            end
 
          end
     end
@@ -26,7 +54,14 @@ function H_potts(S, J)
     # last cloumn
     for i = 1:size(S,1)-1 # column
 
+        nbr_adds = nbr_adds + 1
+
         j = size(S,2) # row
+
+        println("---")
+        println([i,j])
+        println([i+1,j])
+
         energy = energy + δ(S[i,j], S[i+1,j])
 
     end
@@ -35,10 +70,20 @@ function H_potts(S, J)
     # last row
     for j = 1:size(S,2)-1 # column
 
+        nbr_adds = nbr_adds + 1
+
         i = size(S,1) # row
+
+        println("---")
+        println([i,j])
+        println([i,j+1])
+
+
         energy = energy + δ(S[i,j], S[i,j+1])
 
     end
+
+    println(nbr_adds)
 
     return -J*energy
 
@@ -131,8 +176,8 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
 
         if i == 1000
 
-            min_energy = minimum(E_vec[1:i])
-            max_energy = maximum(E_vec[1:i])
+            min_energy = -10000 #minimum(E_vec[1:i])
+            max_energy = -1000 #maximum(E_vec[1:i])
 
 
         end
@@ -209,7 +254,7 @@ end
 
 # algorithm settings
 q = 10 # spins
-J = -(q/2)*0.5 # interaction strength (we have the same interaction strength for all states)
+J = 1 # interaction strength (we have the same interaction strength for all states)
 iter = 50000 # nbr of MC iterations
 f = exp(1)
 nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
@@ -218,6 +263,8 @@ nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
 
 # generate start condiguration for stat S
 dims = 100
+N = dims*dims
+E_min = -2*N
 S_start = zeros(dims,dims)
 map!(x -> x = rand(1:q), S_start, S_start)
 
@@ -230,14 +277,32 @@ PyPlot.imshow(S_start,cmap="hot", interpolation="nearest")
 PyPlot.colorbar()
 #PyPlot.savefig("hw_week_3/fig/potts_start_config.eps", format="eps", dpi=1000)
 
-
-
 f_save, S_configs_last = @time wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
+
+
+E
+minimum(E)
 
 PyPlot.figure()
 PyPlot.plot(E, g_tilde, "*")
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"\tilde{g}")
+
+
+PyPlot.figure()
+PyPlot.semilogy(E, g_tilde, "*")
+PyPlot.xlabel("Energy")
+PyPlot.ylabel(L"\tilde{g}")
+
+
+PyPlot.figure()
+PyPlot.plot(E, log.(g_tilde), "*")
+PyPlot.xlabel("Energy")
+PyPlot.ylabel(L"log(\tilde{g})")
+
+PyPlot.figure()
+PyPlot.plot(E/N, P_T, "*")
+
 #PyPlot.savefig("hw_week_3/fig/potts_g_tilde_final.eps", format="eps", dpi=1000)
 
 PyPlot.figure()
@@ -247,9 +312,28 @@ PyPlot.ylabel(L"f")
 #PyPlot.savefig("hw_week_3/fig/potts_f_vs_iter.eps", format="eps", dpi=1000)
 
 
-T = 1000
+T = 100
 
 P_T = exp.(log.(g_tilde).-E/T)
 
 PyPlot.figure()
-PyPlot.plot(E, P_T, "*")
+PyPlot.plot(E/N, P_T, "*")
+
+PyPlot.figure()
+PyPlot.semilogy(E, P_T, "*")
+
+-2*60*60 - H_potts(zeros(60,60),1)
+
+-2*60*60
+
+println("----------------------")
+
+
+H_potts(zeros(3,3),1)
+
+-2*3*3
+
+32-24
+
+
+1:10-1
