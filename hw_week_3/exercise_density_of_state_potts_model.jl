@@ -33,7 +33,7 @@ end
 
 
 # Wang-Landau algorithm with one fixed f value
-function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E_matrix)
+function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
 
     nbr_stats = length(S_start) # set up
     S_configs = zeros(iter_max, size(S_start,1),size(S_start,2))
@@ -46,13 +46,10 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E_matrix
     E_vec[1] = H_potts(S_start,J)
 
     # update g_tilde for first iteration
-    idx_update = findidx(E_vec[1], E_matrix)
+    idx_update = findfirst(x-> x == E_vec[1], E)
     g_tilde[idx_update] = f*g_tilde[idx_update]
 
     α_log = log(1)
-
-    min_energy = 0
-    max_energy = 0
 
     for i in 2:iter_max
 
@@ -61,18 +58,19 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E_matrix
 
         # update 100 spins
 
-        for j in 1:100
+        for j in 1:1
+            spins = collect(1:q)
             s_flip = rand(1:nbr_stats) # flip site
-            S_update[s_flip] = rand(1:q) # set prop config
+            filter!(x->x≠S_update[s_flip],spins) # only select a new spin
+            S_update[s_flip] = rand(spins) # set prop config
         end
 
         E_new = H_potts(S_update,J) # compute energy for prop config
 
-        # see if we have curent energy
-        idx_old_energy = findidx(E_vec[i-1], E_matrix)
+        idx_old_energy = findfirst(x-> x == E_vec[i-1], E)
         g_tilde_old = g_tilde[idx_old_energy]
 
-        idx_new_energy = findidx(E_new, E_matrix)
+        idx_new_energy = findfirst(x-> x == E_new, E)
         g_tilde_prop = g_tilde[idx_new_energy]
 
         α_log = log(g_tilde_old)-log(g_tilde_prop)
@@ -87,7 +85,7 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E_matrix
         end
 
         # update energy function for current system
-        idx_update = findidx(E_vec[i], E_matrix)
+        idx_update = findfirst(x -> x == E_vec[i], E)
         g_tilde[idx_update] = f*g_tilde[idx_update]
 
     end
@@ -98,7 +96,7 @@ end
 
 
 # Wang-Landau algorithm where the f value is decreased
-function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E_matrix)
+function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
 
     println("Starting Wang-Landau.")
 
@@ -108,7 +106,9 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E_matrix)
 
     for i in 1:nbr_reps
 
-        S_configs, a_vec, E_vec, iter_done = wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E, E_matrix)
+        S_start = ones(size(S_start))
+
+        S_configs, a_vec, E_vec, iter_done = wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E)
 
         f_save[i] = f
 
@@ -118,6 +118,8 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E_matrix)
         @printf "f: %f\n" f
         @printf "MCMC iterations: %.0f\n" iter_done
         @printf "Acc. rate: %.2f %%\n" sum(a_vec)/iter_done*100
+        @printf "E_min: %.0f\n" minimum(E_vec)
+        @printf "E_max: %.0f\n" maximum(E_vec)
 
         # update f
         f = sqrt(f)
@@ -136,21 +138,6 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E_matrix)
 end
 
 
-function findidx(E, E_matrix)
-
-    for i = 1:size(E_matrix,2)
-
-        if E <= E_matrix[1,i] && E >= E_matrix[2,i]
-            return i
-        end
-    end
-
-end
-
-# test findidx
-findidx(0, E_matrix)
-
-
 # test H_potts
 L = 60
 H_potts(zeros(L,L),1)
@@ -162,40 +149,84 @@ H_potts(zeros(L,L),1)
 # algorithm settings
 q = 10 # spins
 J = 1 # interaction strength (we have the same interaction strength for all states)
-iter = 1000 # nbr of MC iterations
+iter = 10000 # nbr of MC iterations
 f = 1.1
-nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
+nbr_reps = 18 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
 
 # generate start condiguration for stat S
 L = 60
 N = L*L
 E_min = -2*N
-S_start = zeros(L,L)
-map!(x -> x = rand(1:q), S_start, S_start)
+S_start = ones(L,L)
+#map!(x -> x = rand(1:q), S_start, S_start)
 
-# init g_tilde and E vectors
-E = LinRange(0,E_min, 500)
-E_upper = E[1:end-1]
-E_lower = E[2:end]
+E = collect(E_min:0)
 
-E_matrix = zeros(2,length(E)-1)
-E_matrix[1,:] = E_upper
-E_matrix[2,:] = E_lower
+g_tilde = ones(length(E))
 
-eval_point = zeros(length(E)-1)
-
-for i in 1:length(E)-1
-    eval_point[i] = sum(E_matrix[:,i])/2
-end
-
-g_tilde = ones(length(eval_point))
 
 PyPlot.figure()
 PyPlot.imshow(S_start,cmap="hot", interpolation="nearest")
 PyPlot.colorbar()
 #PyPlot.savefig("hw_week_3/fig/potts_start_config.eps", format="eps", dpi=1000)
 
+
+
 f_save, S_configs_last = @time wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
+
+
+# init g_tilde and E vectors
+E_final = LinRange(0,E_min, 100)
+E_upper = E_final[1:end-1]
+E_lower = E_final[2:end]
+
+E_matrix = zeros(2,length(E_final)-1)
+E_matrix[1,:] = E_upper
+E_matrix[2,:] = E_lower
+
+eval_point = zeros(length(E_final)-1)
+g_tilde_final = ones(length(eval_point))
+g_tilde_final_nbr_events = zeros(length(eval_point))
+
+for i in 1:length(E_final)-1
+    eval_point[i] = sum(E_matrix[:,i])/2
+end
+
+
+
+function findidx(E, E_matrix)
+
+    for i = 1:size(E_matrix,2)
+
+        if E <= round(E_matrix[1,i]) && E >= round(E_matrix[2,i])
+            return i
+        end
+    end
+
+end
+
+
+for i in E
+    println(i)
+    idx = findidx(i, E_matrix)
+    idx2 =  findfirst(x-> x == i, E)
+    g_tilde_final[idx] = g_tilde_final[idx] + g_tilde[idx2]
+    g_tilde_final_nbr_events[idx] = g_tilde_final_nbr_events[idx] + 1
+end
+
+g_tilde_final
+g_tilde_final_nbr_events
+
+
+
+g_tilde_final = g_tilde_final./g_tilde_final_nbr_events
+
+
+# test findidx
+
+
+minimum(g_tilde)
+maximum(g_tilde)
 
 
 E_vec = H_potts(S_start,J)
@@ -203,19 +234,25 @@ E_vec = H_potts(S_start,J)
 # update g_tilde for first iteration
 idx_new_energy = findidx(E_vec, E_matrix)
 
+S_start = ones(L,L)
+
+f = 1.1
 
 
-S_configs, a_vec, E_vec, iter_max = wang_landau_one_iteration(S_start, 100000, J, q, f, g_tilde, E_matrix)
+S_configs, a_vec, E_vec, iter_max = @time wang_landau_one_iteration(S_start, 10000, J, q, f, g_tilde, E)
 
 
-sum(a_vec)/100000*100
+sum(a_vec)/10000*100
 
 E_vec
 
 PyPlot.figure()
 PyPlot.plot(E_vec)
 
-g_tilde
+minimum(E_vec)
+maximum(E_vec)
+
+
 
 minimum(g_tilde)
 maximum(g_tilde)
@@ -228,10 +265,17 @@ minimum(E)
 findall(x -> x != 0, g_tilde)
 
 
+
 PyPlot.figure()
-PyPlot.plot(eval_point, g_tilde, "*")
+PyPlot.plot(eval_point, g_tilde_final, "*")
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"\tilde{g}")
+
+PyPlot.figure()
+PyPlot.plot(eval_point, log.(g_tilde_final), "*")
+PyPlot.xlabel("Energy")
+PyPlot.ylabel(L"log(\tilde{g})")
+
 
 
 PyPlot.figure()
@@ -241,7 +285,7 @@ PyPlot.ylabel(L"\tilde{g}")
 
 
 PyPlot.figure()
-PyPlot.plot(eval_point, log.(g_tilde), "*")
+PyPlot.plot(E, log.(g_tilde), "*")
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"log(\tilde{g})")
 
@@ -259,13 +303,13 @@ PyPlot.ylabel(L"f")
 
 T = 100
 
-P_T = exp.(log.(g_tilde).-E/T)
+P_T = exp.(log.(g_tilde_final).-eval_point/T)
 
 PyPlot.figure()
-PyPlot.plot(E/N, P_T, "*")
+PyPlot.plot(eval_point/N, P_T, "*")
 
 PyPlot.figure()
-PyPlot.semilogy(E, P_T, "*")
+PyPlot.semilogy(eval_point/N, P_T, "*")
 
 
 # test energy function
