@@ -33,7 +33,7 @@ end
 
 
 # Wang-Landau algorithm with one fixed f value
-function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
+function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E_matrix)
 
     nbr_stats = length(S_start) # set up
     S_configs = zeros(iter_max, size(S_start,1),size(S_start,2))
@@ -46,16 +46,8 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
     E_vec[1] = H_potts(S_start,J)
 
     # update g_tilde for first iteration
-    g_update_idx = findlast(x -> x == E_vec[1], E)
-    if typeof(g_update_idx) == Nothing
-        g_update = 1
-        append!(E,[E_vec[1]])
-        append!(g_tilde,[f*g_update])
-    else
-        g_update = g_tilde[g_update_idx[1]]
-        g_tilde[g_update_idx[1]] = f*g_update
-    end
-
+    idx_update = findidx(E_vec[1], E_matrix)
+    g_tilde[idx_update] = f*g_tilde[idx_update]
 
     α_log = log(1)
 
@@ -66,22 +58,22 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
 
         # ordinary update
         S_update = S_configs[i-1,:,:] # select site to flip at random
-        s_flip = rand(1:nbr_stats) # flip site
-        S_update[s_flip] = rand(1:q) # set prop config
+
+        # update 100 spins
+
+        for j in 1:100
+            s_flip = rand(1:nbr_stats) # flip site
+            S_update[s_flip] = rand(1:q) # set prop config
+        end
 
         E_new = H_potts(S_update,J) # compute energy for prop config
 
         # see if we have curent energy
-        g_tilde_prop_idx = findlast(x -> x == E_new, E)
+        idx_old_energy = findidx(E_vec[i-1], E_matrix)
+        g_tilde_old = g_tilde[idx_old_energy]
 
-        if typeof(g_tilde_prop_idx) == Nothing
-            g_tilde_prop = 1
-        else
-            g_tilde_prop = g_tilde[g_tilde_prop_idx[1]]
-        end
-
-        g_tilde_old_idx = findlast(x -> x == E_vec[i-1], E)
-        g_tilde_old = g_tilde[g_tilde_old_idx[1]]
+        idx_new_energy = findidx(E_new, E_matrix)
+        g_tilde_prop = g_tilde[idx_new_energy]
 
         α_log = log(g_tilde_old)-log(g_tilde_prop)
 
@@ -95,38 +87,8 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
         end
 
         # update energy function for current system
-        g_update_idx = findlast(x -> x == E_vec[i], E)
-
-        if typeof(g_update_idx) == Nothing
-            g_update = 1
-            append!(E,[E_vec[i]])
-            append!(g_tilde,[f*g_update])
-        else
-            g_update = g_tilde[g_update_idx[1]]
-            g_tilde[g_update_idx[1]] = f*g_update
-        end
-
-        if i == 1000
-
-            min_energy = -10000 #minimum(E_vec[1:i])
-            max_energy = -1000 #maximum(E_vec[1:i])
-
-
-        end
-
-        if mod(i,100) == 0 && i > 1000
-
-
-            nbr_min = length(findall(x -> x <= min_energy, E_vec[1:i]))
-            nbr_max = length(findall(x -> x >= max_energy, E_vec[1:i]))
-
-            if nbr_min > 5 && nbr_max > 5
-                return S_configs[1:i,:,:], a_vec[1:i], E_vec[1:i], i
-            end
-
-
-        end
-
+        idx_update = findidx(E_vec[i], E_matrix)
+        g_tilde[idx_update] = f*g_tilde[idx_update]
 
     end
 
@@ -136,7 +98,7 @@ end
 
 
 # Wang-Landau algorithm where the f value is decreased
-function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
+function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E_matrix)
 
     println("Starting Wang-Landau.")
 
@@ -146,7 +108,7 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
 
     for i in 1:nbr_reps
 
-        S_configs, a_vec, E_vec, iter_done = wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E)
+        S_configs, a_vec, E_vec, iter_done = wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E, E_matrix)
 
         f_save[i] = f
 
@@ -173,13 +135,25 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
 
 end
 
+
+function findidx(E, E_matrix)
+
+    for i = 1:size(E_matrix,2)
+
+        if E <= E_matrix[1,i] && E >= E_matrix[2,i]
+            return i
+        end
+    end
+
+end
+
+# test findidx
+findidx(0, E_matrix)
+
+
 # test H_potts
-
-
 L = 60
-
 H_potts(zeros(L,L),1)
-
 -2*L*L
 
 
@@ -188,8 +162,8 @@ H_potts(zeros(L,L),1)
 # algorithm settings
 q = 10 # spins
 J = 1 # interaction strength (we have the same interaction strength for all states)
-iter = 50000 # nbr of MC iterations
-f = exp(1)
+iter = 1000 # nbr of MC iterations
+f = 1.1
 nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
 
 # generate start condiguration for stat S
@@ -200,8 +174,21 @@ S_start = zeros(L,L)
 map!(x -> x = rand(1:q), S_start, S_start)
 
 # init g_tilde and E vectors
-g_tilde = [1.]
-E = [H_potts(S_start,J)]
+E = LinRange(0,E_min, 500)
+E_upper = E[1:end-1]
+E_lower = E[2:end]
+
+E_matrix = zeros(2,length(E)-1)
+E_matrix[1,:] = E_upper
+E_matrix[2,:] = E_lower
+
+eval_point = zeros(length(E)-1)
+
+for i in 1:length(E)-1
+    eval_point[i] = sum(E_matrix[:,i])/2
+end
+
+g_tilde = ones(length(eval_point))
 
 PyPlot.figure()
 PyPlot.imshow(S_start,cmap="hot", interpolation="nearest")
@@ -211,11 +198,38 @@ PyPlot.colorbar()
 f_save, S_configs_last = @time wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
 
 
+E_vec = H_potts(S_start,J)
+
+# update g_tilde for first iteration
+idx_new_energy = findidx(E_vec, E_matrix)
+
+
+
+S_configs, a_vec, E_vec, iter_max = wang_landau_one_iteration(S_start, 100000, J, q, f, g_tilde, E_matrix)
+
+
+sum(a_vec)/100000*100
+
+E_vec
+
+PyPlot.figure()
+PyPlot.plot(E_vec)
+
+g_tilde
+
+minimum(g_tilde)
+maximum(g_tilde)
+
+
 E
 minimum(E)
 
+
+findall(x -> x != 0, g_tilde)
+
+
 PyPlot.figure()
-PyPlot.plot(E, g_tilde, "*")
+PyPlot.plot(eval_point, g_tilde, "*")
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"\tilde{g}")
 
@@ -227,7 +241,7 @@ PyPlot.ylabel(L"\tilde{g}")
 
 
 PyPlot.figure()
-PyPlot.plot(E, log.(g_tilde), "*")
+PyPlot.plot(eval_point, log.(g_tilde), "*")
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"log(\tilde{g})")
 
