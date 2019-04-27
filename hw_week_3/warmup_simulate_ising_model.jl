@@ -9,9 +9,9 @@ using LaTeXStrings
 ################################################################################
 
 # generate start condiguration for stat S
-dims = 100
-S_start = zeros(dims,dims)
-map!(x -> x = rand([1,-1]), S_start, S_start)
+L = 100
+S_start = zeros(L,L)
+map!(x -> x = rand([-1,1]), S_start, S_start)
 
 # the energy function for the ising model
 # code adaped from https://github.com/maxjkiss/q-state-potts-model
@@ -20,8 +20,8 @@ function E_ising(S, J)
     energy = 0
     L = size(S,1)
 
-    for i = 0:L-1 # column
-        for j = 0:L-1 # row
+    for i in 0:L-1
+        for j in 0:L-1
 
             energy = energy + S[i+1,j+1]*S[mod(i+1,L)+1,j+1]
             energy = energy + S[i+1,j+1]*S[i+1,mod(j+1,L)+1]
@@ -49,7 +49,7 @@ function metroplis(S_start, iter, J, β)
     energy_vec[1] = E_old
     α_log = log(1)
 
-    for i = 2:iter
+    for i in 2:iter
 
         # print info
         if mod(i,10000) == 0
@@ -58,9 +58,9 @@ function metroplis(S_start, iter, J, β)
             @printf "Percentage done: %.2f %%\n" i/iter*100
         end
 
-        S_update = S_configs[i-1,:,:] # select state to flip at random
-        S_flip = rand(1:nbr_stats) # flip state
-        S_update[S_flip] = -1*S_update[S_flip] # set prop config
+        S_update = S_configs[i-1,:,:] # select site to flip at random
+        s_flip = rand(1:nbr_stats) # flip ste
+        S_update[s_flip] = -1*S_update[s_flip] # set prop config
 
         E_new = E_ising(S_update,J) # compute energy for prop config
 
@@ -89,7 +89,7 @@ function metroplis(S_start, iter, J, β)
 end
 
 # set system parameters
-J = 0.5 # interaction strength (we have the same interaction strength for all states)
+J = 1 # interaction strength (we have the same interaction strength for all states)
 β = 20 # tempering
 iter = 200000 # nbr of MC interstions
 
@@ -110,26 +110,26 @@ PyPlot.figure(figsize=(8,12))
 
 PyPlot.subplot(3,2,1)
 PyPlot.imshow(S_configs[1,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel("Iter. 1")
+PyPlot.xlabel("Iteration 1")
 
 PyPlot.subplot(3,2,2)
 PyPlot.imshow(S_configs[1000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel("Iter. 1000")
+PyPlot.xlabel("Iteration 1000")
 
 PyPlot.subplot(3,2,3)
 PyPlot.imshow(S_configs[10000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel("Iter. 10000")
+PyPlot.xlabel("Iteration 10000")
 
 PyPlot.subplot(3,2,4)
 PyPlot.imshow(S_configs[100000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel("Iter. 100000")
+PyPlot.xlabel("Iteration 100000")
 
 PyPlot.subplot(3,2,5)
 PyPlot.imshow(S_configs[150000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel("Iter. 150000")
+PyPlot.xlabel("Iteration 150000")
 
 PyPlot.subplot(3,2,6)
 PyPlot.imshow(S_configs[200000,:,:], cmap="hot", interpolation="nearest")
-PyPlot.xlabel("Iter. 200000")
+PyPlot.xlabel("Iteration 200000")
 
 #PyPlot.savefig("hw_week_3/fig/ising_config_conv.png", format="png")

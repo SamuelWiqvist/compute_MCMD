@@ -15,8 +15,8 @@ function H_potts(S, J)
     energy = 0
     L = size(S,1)
 
-    for i = 0:L-1 # column
-        for j = 0:L-1 # row
+    for i in 0:L-1
+        for j in 0:L-1
 
             energy = energy + δ(S[i+1,j+1], S[mod(i+1,L)+1,j+1])
             energy = energy + δ(S[i+1,j+1], S[i+1,mod(j+1,L)+1])
@@ -29,15 +29,8 @@ function H_potts(S, J)
 end
 
 # help function for H_potts
-function δ(s, s_star)
+δ(s, s_star) = s == s_star ? 1 : 0 # kronecker delta
 
-    if s == s_star
-        return 1
-    else
-        return 0
-    end
-
-end
 
 # Wang-Landau algorithm with one fixed f value
 function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
@@ -69,12 +62,12 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, g_tilde, E)
     min_energy = 0
     max_energy = 0
 
-    for i = 2:iter_max
+    for i in 2:iter_max
 
         # ordinary update
-        S_update = S_configs[i-1,:,:] # select state to flip at random
-        S_flip = rand(1:nbr_stats) # flip state
-        S_update[S_flip] = rand(1:q) # set prop config
+        S_update = S_configs[i-1,:,:] # select site to flip at random
+        s_flip = rand(1:nbr_stats) # flip site
+        S_update[s_flip] = rand(1:q) # set prop config
 
         E_new = H_potts(S_update,J) # compute energy for prop config
 
@@ -151,7 +144,7 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
     f_save = zeros(nbr_reps)
     S_configs_last = zeros(iter, size(S_start,1),size(S_start,2))
 
-    for i = 1:nbr_reps
+    for i in 1:nbr_reps
 
         S_configs, a_vec, E_vec, iter_done = wang_landau_one_iteration(S_start, iter, J, q, f, g_tilde, E)
 
@@ -163,14 +156,6 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, g_tilde, E)
         @printf "f: %f\n" f
         @printf "MCMC iterations: %.0f\n" iter_done
         @printf "Acc. rate: %.2f %%\n" sum(a_vec)/iter_done*100
-
-        #=
-        PyPlot.figure()
-        PyPlot.plot(E, g_tilde, "*-")
-        PyPlot.xlabel("Energy")
-        PyPlot.ylabel(L"\tilde{g}")
-        PyPlot.savefig("hw_week_3/fig/potts_g_tilde_iteration_"*string(i)*".eps", format="eps", dpi=1000)
-        =#
 
         # update f
         f = sqrt(f)
@@ -268,23 +253,11 @@ PyPlot.plot(E/N, P_T, "*")
 PyPlot.figure()
 PyPlot.semilogy(E, P_T, "*")
 
--2*60*60 - H_potts(zeros(60,60),1)
 
--2*60*60
+# test energy function
 
-println("----------------------")
-
-L = 3
+L = 60
 
 H_potts(zeros(L,L),1)
 
 -2*L*L
-
-
-L*L
-
-
-32-24
-
-
-1:10-1
