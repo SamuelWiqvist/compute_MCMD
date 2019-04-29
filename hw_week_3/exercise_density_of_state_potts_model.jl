@@ -143,7 +143,7 @@ end
 
 
 # test H_potts
-L = 15
+L = 10
 H_potts(zeros(L,L),1)
 -2*L*L
 
@@ -153,7 +153,7 @@ H_potts(zeros(L,L),1)
 # algorithm settings
 q = 10 # spins
 J = 1 # interaction strength (we have the same interaction strength for all states)
-iter = 1000000 # nbr of MC iterations
+iter = 10000000 # nbr of MC iterations
 f = 2.7
 nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
 
@@ -181,16 +181,14 @@ for i in 1:length(E)-1
 end
 
 
+# set start configuration
+map!(x -> x = rand(1:q), S_start, S_start)
+
 PyPlot.figure()
 PyPlot.imshow(S_start,cmap="hot", interpolation="nearest")
 PyPlot.colorbar()
-#PyPlot.savefig("hw_week_3/fig/potts_start_config.eps", format="eps", dpi=1000)
-
-map!(x -> x = rand(1:q), S_start, S_start)
-
 
 f_save = @time wang_landau(nbr_reps,iter, J, q, f, S_start, log_g_tilde, E_matrix)
-
 
 PyPlot.figure()
 PyPlot.plot(f_save)
@@ -214,11 +212,12 @@ PyPlot.plot(eval_point, log_g_tilde_normalized)
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"log \tilde{g}")
 
-#log_g_tilde = log_g_tilde ./ sum(log_g_tilde)
 
+T = 0.7145
 
-T = 0.7
-
+# T_critical 0.7145
+# 0.7 rigth mode
+# 0.8 left mode
 
 P_T = exp.(log_g_tilde_normalized.-eval_point/T)
 
@@ -230,22 +229,17 @@ maximum(P_T_normalized)
 
 
 PyPlot.figure()
-PyPlot.semilogy(eval_point/N, P_T)
+PyPlot.plot(eval_point/N, P_T_normalized)
+PyPlot.ylabel("P(E)")
+PyPlot.xlabel(L"E/N")
 
 PyPlot.figure()
-PyPlot.plot(eval_point/N, P_T)
+PyPlot.plot(eval_point,  P_T_normalized)
+PyPlot.ylabel("P(E)")
+PyPlot.xlabel(L"E")
 
-
-PyPlot.figure()
-PyPlot.semilogy(eval_point/N, P_T_normalized)
-
-PyPlot.figure()
-PyPlot.semilogy(eval_point,  P_T_normalized)
 
 # wang_landau one iteration
-
-
-S_start = ones(L,L)
 
 map!(x -> x = rand(1:q), S_start, S_start)
 
@@ -254,9 +248,9 @@ f = 2.7
 log(f)
 log_g_tilde = log.(ones(length(eval_point)))
 
-a_vec, E_vec, E_visit_counter, iter_max = @time wang_landau_one_iteration(S_start, 1000000, J, q, f, log_g_tilde, E_matrix)
+a_vec, E_vec, E_visit_counter, iter_max = @time wang_landau_one_iteration(S_start, 10000000, J, q, f, log_g_tilde, E_matrix)
 
-sum(a_vec)/1000000*100
+sum(a_vec)/10000000*100
 
 PyPlot.figure()
 PyPlot.plot(eval_point, E_visit_counter, "*-")
