@@ -80,7 +80,7 @@ function wang_landau_one_iteration(S_start, iter_max, J, q, f, log_g_tilde, E_ma
             E_vec[i] = E_new
             a_vec[i] = 1
         else
-            E_vec[i] = E_new
+            E_vec[i] = E_vec[i-1]
         end
 
         # update log_g_tilde for current system
@@ -143,7 +143,7 @@ end
 
 
 # test H_potts
-L = 60
+L = 15
 H_potts(zeros(L,L),1)
 -2*L*L
 
@@ -153,12 +153,12 @@ H_potts(zeros(L,L),1)
 # algorithm settings
 q = 10 # spins
 J = 1 # interaction strength (we have the same interaction strength for all states)
-iter = 10000 # nbr of MC iterations
+iter = 1000000 # nbr of MC iterations
 f = 2.7
 nbr_reps = 25 # such that exp(1)^((1/2)^25) \approx exp(10^(-8))
 
 # generate start condiguration for stat S
-L = 60
+L = 10
 N = L*L
 E_min = -2*N
 S_start = ones(L,L)
@@ -186,6 +186,9 @@ PyPlot.imshow(S_start,cmap="hot", interpolation="nearest")
 PyPlot.colorbar()
 #PyPlot.savefig("hw_week_3/fig/potts_start_config.eps", format="eps", dpi=1000)
 
+map!(x -> x = rand(1:q), S_start, S_start)
+
+
 f_save = @time wang_landau(nbr_reps,iter, J, q, f, S_start, log_g_tilde, E_matrix)
 
 
@@ -194,23 +197,50 @@ PyPlot.plot(f_save)
 PyPlot.xlabel("Iteration")
 PyPlot.ylabel(L"f")
 
-
 PyPlot.figure()
 PyPlot.plot(eval_point, log_g_tilde)
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"log \tilde{g}")
 
 
+# nomrmalize g
+idx_norm = findidx(-2*N, E_matrix)
 
-T = 100
+log_g_tilde_normalized = log_g_tilde .- log_g_tilde[idx_norm] .+ log(q)
 
-P_T = exp.(log.(g_tildE).-eval_point/T)
-
-PyPlot.figure()
-PyPlot.plot(eval_point/N, P_T, "*")
 
 PyPlot.figure()
-PyPlot.semilogy(eval_point/N, P_T, "*")
+PyPlot.plot(eval_point, log_g_tilde_normalized)
+PyPlot.xlabel("Energy")
+PyPlot.ylabel(L"log \tilde{g}")
+
+#log_g_tilde = log_g_tilde ./ sum(log_g_tilde)
+
+
+T = 0.7
+
+
+P_T = exp.(log_g_tilde_normalized.-eval_point/T)
+
+maximum(P_T)
+
+P_T_normalized = P_T ./ maximum(P_T)
+
+maximum(P_T_normalized)
+
+
+PyPlot.figure()
+PyPlot.semilogy(eval_point/N, P_T)
+
+PyPlot.figure()
+PyPlot.plot(eval_point/N, P_T)
+
+
+PyPlot.figure()
+PyPlot.semilogy(eval_point/N, P_T_normalized)
+
+PyPlot.figure()
+PyPlot.semilogy(eval_point,  P_T_normalized)
 
 # wang_landau one iteration
 
@@ -224,9 +254,7 @@ f = 2.7
 log(f)
 log_g_tilde = log.(ones(length(eval_point)))
 
-
 a_vec, E_vec, E_visit_counter, iter_max = @time wang_landau_one_iteration(S_start, 1000000, J, q, f, log_g_tilde, E_matrix)
-
 
 sum(a_vec)/1000000*100
 
@@ -240,83 +268,7 @@ PyPlot.plot(E_vec)
 PyPlot.xlabel("Iteration")
 PyPlot.ylabel("Energy")
 
-minimum(E_vec)
-maximum(E_vec)
-
-g_tilde
-
-
-minimum(log_g_tilde)
-maximum(log_g_tilde)
-
-
-
-E
-minimum(E)
-
-
-findall(x -> x != 0, g_tilde)
-
-
 PyPlot.figure()
 PyPlot.plot(eval_point, log_g_tilde)
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"log \tilde{g}")
-
-
-
-
-eval_point
-
-
-g_tilde
-
-
-PyPlot.figure()
-PyPlot.plot(eval_point, log.(g_tilde))
-PyPlot.xlabel("Energy")
-PyPlot.ylabel(L"log(\tilde{g})")
-
-
-
-PyPlot.figure()_
-PyPlot.semilogy(E, g_tilde, "*")
-PyPlot.xlabel("Energy")
-PyPlot.ylabel(L"\tilde{g}")
-
-
-PyPlot.figure()
-PyPlot.plot(E, log.(g_tilde), "*")
-PyPlot.xlabel("Energy")
-PyPlot.ylabel(L"log(\tilde{g})")
-
-PyPlot.figure()
-PyPlot.plot(E/N, P_T, "*")
-
-#PyPlot.savefig("hw_week_3/fig/potts_g_tildE.eps", format="eps", dpi=1000)
-
-PyPlot.figure()
-PyPlot.plot(f_save)
-PyPlot.xlabel("Iteration")
-PyPlot.ylabel(L"f")
-#PyPlot.savefig("hw_week_3/fig/potts_f_vs_iter.eps", format="eps", dpi=1000)
-
-
-T = 100
-
-P_T = exp.(log.(g_tildE).-eval_point/T)
-
-PyPlot.figure()
-PyPlot.plot(eval_point/N, P_T, "*")
-
-PyPlot.figure()
-PyPlot.semilogy(eval_point/N, P_T, "*")
-
-
-# test energy function
-
-L = 60
-
-H_potts(zeros(L,L),1)
-
--2*L*L
