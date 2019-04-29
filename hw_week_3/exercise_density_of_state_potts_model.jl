@@ -230,13 +230,13 @@ maximum(P_T_normalized)
 
 PyPlot.figure()
 PyPlot.plot(eval_point/N, P_T_normalized)
-PyPlot.ylabel("P(E)")
+PyPlot.ylabel(L"P_T(E)")
 PyPlot.xlabel(L"E/N")
 
 PyPlot.figure()
 PyPlot.plot(eval_point,  P_T_normalized)
-PyPlot.ylabel("P(E)")
-PyPlot.xlabel(L"E")
+PyPlot.ylabel(L"P_T(E)")
+PyPlot.xlabel(L"Energy")
 
 
 # wang_landau one iteration
