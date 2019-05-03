@@ -1,6 +1,6 @@
 using PyPlot
 using KernelDensity
-
+using LaTeXStrings
 
 include("data.jl")
 
@@ -68,108 +68,103 @@ end
 PyPlot.legend()
 
 
-function compton_scattering(energy_in::Float64, material::String, N_samples::Int)
+function compton_scattering(hv::Float64)
 
 
     # check inputs
-    if !(energy_in in data_h2o[:,1]) # check energy level
+    if !(hv in data_h2o[:,1]) # check energy level
         println("Energy level not allowed, allowed energy levelse are:")
         println(data_h2o[:,1])
     end
 
-    if !(material in ["H2O"; "Al"; "I"; "Pb"]) # check material
-        println("Material not allowed, allowed materials are:")
-        println(["H2O"; "Al"; "I"; "Pb"])
-    end
+    # set parameters for compton scattering
+    h = 1; m_0 = 1; c = 1
 
-    # object parameters
-    distance_to_object = 0.5
-    x_length_object = 2
-    z_length_object = 2
-    y_length_object = 1
+    λ = hv / (m_0*c^2)
+    Q = (2*λ + 1)/(2*λ + 9)
 
+    run_sampler = true
+    nbr_sampels = 0
+    hv_prime = 0
+    θ = 0
+    cosθ = 0
+    while run_sampler
 
-    hit_agels = zeros(2,N_samples)
-    hit_possition = zeros(3,N_samples)
+        nbr_sampels = nbr_sampels + 1
 
-    nbr_samples = 0
-    for i = 1:N_samples
-        generate_new_sample = true
-        while generate_new_sample
-            generate_new_sample = true
-            nbr_samples = nbr_samples + 1
+        R1 = rand()
+        R2 = rand()
+        R3 = rand()
 
-            # sample the start angels from a point source at the origin
-            θ = 2*rand() - 1 # sample polar angels
-            ϕ = 2*π*rand() # sample azimuthal angel
-
-            # compute position at object
-            r_object = distance_to_object/(sin(θ)*sin(ϕ))
-            x_object = r_object*sin(θ)*cos(ϕ)
-            z_object = r_object*cos(θ)
-
-            # check if we hit the object
-            if x_object >= -x_length_object/2 && x_object <= x_length_object/2
-                if z_object >= -z_length_object/2 && z_object <= z_length_object/2
-                    generate_new_sample = false
-                    hit_possition[:,i] = [x_object;distance_to_object;z_object]
-                    hit_agels[:,i] = [θ;ϕ]
-                end
+        if R1 < Q
+            ρ = 1 + 2*λ*R2
+            if R3 > (4*(ρ-1))/ρ^2
+                # generate new sample
+            else
+                cosθ = 1-2*R2
+                θ = acos(cosθ)
+                θ = θ*180/π # TODO fix this
+                hv_prime = hv/ρ
+                run_sampler = false
+            end
+        else
+            ρ = (2*λ + 1)/(2*λ*R2 + 1)
+            if R3 > ((1-(ρ-1)/λ)^2 + 1/ρ)/2
+                # generate new sample
+            else
+                cosθ = 1-(ρ-1)/λ
+                θ = acos(cosθ)
+                θ = θ*180/π
+                hv_prime = hv/ρ
+                run_sampler = false
             end
         end
     end
 
-    println("Nbr samples used:")
-    println(nbr_samples)
+    return [hv_prime; θ; cosθ; nbr_sampels]
 
-    # find attenuation coefficient μ
-    idx_energy_levle = findfirst(x-> x == 1, data_h2o[:,1])
-
-    if  material == "H2O"
-        μ = data_h2o[idx_energy_levle,2]
-    elseif material == "Al"
-        μ = data_Al[idx_energy_levle,2]
-    elseif material == "I"
-        μ = data_I[idx_energy_levle,2]
-    elseif material == "Pb"
-        μ = data_Pb[idx_energy_levle,2]
-    end
-
-    # sample path-lengths
-    d = generate_photon_path_lengths(μ, N_samples)
-
-
-    # update possion for particels
-    new_possition = zeros(3,N_samples)
-
-
-
-    # check if a particel has left the object
-    return d, hit_possition, hit_agels
 end
 
-data_h2o[:,1]
 
-d, hit_possition, hit_agels = compton_scattering(0.05, "Al", 1)
+N = 100000
 
-findfirst(x-> x == 1, data_h2o[:,1])
+energy_levels = data_h2o[:,1]
 
-hit_possition[:,1]
 
-distance_to_object = 0.5
-x_length_object = 2
-z_length_object = 2
-y_length_object = 1
+energy_levels
 
-θ = 2*rand() - 1 # sample polar angels
-ϕ = 2*π*rand() # sample azimuthal angel
-r = 1
 
-r_object = distance_to_object/(sin(θ)*sin(ϕ))
-x_object = r_object*sin(θ)*cos(ϕ)
-z_object = r_object*cos(θ)
+samples_compton_scattering = zeros(4,N,length(energy_levels))
 
-x_object >= -x_length_object/2 && x_object <= x_length_object/2
-z_object >= -z_length_object/2 && z_object <= z_length_object/2
 
-x_new(t) = t*x
+for i in 1:length(energy_levels)
+    for j = 1:N
+        samples_compton_scattering[:,j,i] = compton_scattering(energy_levels[i])
+    end
+end
+
+PyPlot.figure()
+h = PyPlot.plt[:hist](samples_compton_scattering[4,:,7],100)
+
+
+PyPlot.figure(figsize=(10,40))
+
+energy_level = 0
+
+for i in 1:2:2*length(energy_levels)
+    global energy_level = energy_level + 1
+    PyPlot.subplot(7,2,i)
+    h = PyPlot.plt[:hist](samples_compton_scattering[1,:,energy_level],100)
+    PyPlot.subplot(7,2,i+1)
+    h = PyPlot.plt[:hist](samples_compton_scattering[2,:,energy_level],100)
+end
+
+
+
+energy_level = 7
+
+PyPlot.figure()
+PyPlot.subplot(1,2,1)
+h = PyPlot.plt[:hist](samples_compton_scattering[1,:,energy_level],100)
+PyPlot.subplot(1,2,2)
+h = PyPlot.plt[:hist](samples_compton_scattering[3,:,energy_level],100)
