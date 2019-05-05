@@ -2,11 +2,10 @@ using PyPlot
 using KernelDensity
 using LaTeXStrings
 
-include("data.jl")
+# load data
+include(pwd()*"/hw_week_4/data.jl")
 
-PyPlot.figure()
-
-
+# task 1
 '''
     generate_photon_path_lengths(μ::Real, N::Int)
 
@@ -18,15 +17,13 @@ function generate_photon_path_lengths(μ::Real, N::Int)
     return d
 end
 
-
-
 PyPlot.figure()
 for i = 1:size(data_h2o,1)
     μ = sum(data_h2o[i,end-1])
     N = 10^3
     d = generate_photon_path_lengths(μ, N)
     kde_est = kde(d)
-    PyPlot.plot(kde_est.x, kde_est.density, label=string(data_h2o[i,1])*"KeV")
+    PyPlot.plot(kde_est.x, kde_est.density, label=string(data_h2o[i,1])*"MeV")
     PyPlot.title("H2O")
 end
 PyPlot.legend()
@@ -37,12 +34,10 @@ for i = 1:size(data_h2o,1)
     N = 10^3
     d = generate_photon_path_lengths(μ, N)
     kde_est = kde(d)
-    PyPlot.plot(kde_est.x, kde_est.density, label=string(data_Al[i,1])*"KeV")
+    PyPlot.plot(kde_est.x, kde_est.density, label=string(data_Al[i,1])*"MeV")
     PyPlot.title("Al")
 end
 PyPlot.legend()
-
-
 
 PyPlot.figure()
 for i = 1:size(data_h2o,1)
@@ -50,11 +45,10 @@ for i = 1:size(data_h2o,1)
     N = 10^3
     d = generate_photon_path_lengths(μ, N)
     kde_est = kde(d)
-    PyPlot.plot(kde_est.x, kde_est.density, label=string(data_I[i,1])*"KeV")
+    PyPlot.plot(kde_est.x, kde_est.density, label=string(data_I[i,1])*"MeV")
     PyPlot.title("I")
 end
 PyPlot.legend()
-
 
 PyPlot.figure()
 for i = 1:size(data_h2o,1)
@@ -62,39 +56,35 @@ for i = 1:size(data_h2o,1)
     N = 10^3
     d = generate_photon_path_lengths(μ, N)
     kde_est = kde(d)
-    PyPlot.plot(kde_est.x, kde_est.density, label=string(data_Pb[i,1])*"KeV")
+    PyPlot.plot(kde_est.x, kde_est.density, label=string(data_Pb[i,1])*"MeV")
     PyPlot.title("Pb")
 end
 PyPlot.legend()
 
+# task 2
 
+
+'''
+    compton_scattering(hv::Float64)
+
+Function to generate one compton scattering event.
+'''
 function compton_scattering(hv::Float64)
 
-
-    # check inputs
-    if !(hv in data_h2o[:,1]) # check energy level
-        println("Energy level not allowed, allowed energy levelse are:")
-        println(data_h2o[:,1])
-    end
-
-    # set parameters for compton scattering
     h = 1; m_0 = 1; c = 1
 
     λ = hv / (m_0*c^2)
     Q = (2*λ + 1)/(2*λ + 9)
 
     run_sampler = true
-    nbr_sampels = 0
-    hv_prime = 0
-    θ = 0
-    cosθ = 0
+
+    nbr_sampels = 0; hv_prime = 0.; θ = 0.; cosθ = 0.
+
     while run_sampler
 
         nbr_sampels = nbr_sampels + 1
 
-        R1 = rand()
-        R2 = rand()
-        R3 = rand()
+        R1 = rand(); R2 = rand(); R3 = rand()
 
         if R1 < Q
             ρ = 1 + 2*λ*R2
@@ -103,7 +93,7 @@ function compton_scattering(hv::Float64)
             else
                 cosθ = 1-2*R2
                 θ = acos(cosθ)
-                θ = θ*180/π # TODO fix this
+                θ = θ*180/π
                 hv_prime = hv/ρ
                 run_sampler = false
             end
@@ -119,6 +109,7 @@ function compton_scattering(hv::Float64)
                 run_sampler = false
             end
         end
+
     end
 
     return [hv_prime; θ; cosθ; nbr_sampels]
@@ -126,16 +117,10 @@ function compton_scattering(hv::Float64)
 end
 
 
+# sample compton scattering
 N = 100000
-
 energy_levels = data_h2o[:,1]
-
-
-energy_levels
-
-
 samples_compton_scattering = zeros(4,N,length(energy_levels))
-
 
 for i in 1:length(energy_levels)
     for j = 1:N
@@ -143,6 +128,7 @@ for i in 1:length(energy_levels)
     end
 end
 
+# plotting
 PyPlot.figure()
 h = PyPlot.plt[:hist](samples_compton_scattering[4,:,7],100)
 
