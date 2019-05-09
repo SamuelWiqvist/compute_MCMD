@@ -141,7 +141,7 @@
     \def\gt{>}
     \def\lt{<}
     % Document parameters
-    \title{Steller populations within clusters}
+    \title{Stellar populations within clusters}
     
     
     
@@ -286,7 +286,7 @@
 
     \paragraph{Introduction}\label{introduction}
 
-    We will use Monte Carlo methods to analyses steller populations within
+    We will use Monte Carlo methods to analyses stellar populations within
 clusters.
 
     \paragraph{Set-up}\label{set-up}
@@ -296,7 +296,7 @@ calculations, and to fix the random numbers (such that we get the same
 result each time we run our analyses).
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}2}]:} \PY{k}{using} \PY{n}{PyPlot} \PY{c}{\PYZsh{} for plotting}
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k}{using} \PY{n}{PyPlot} \PY{c}{\PYZsh{} for plotting}
         \PY{k}{using} \PY{n}{Statistics} \PY{c}{\PYZsh{} for computing statistics }
         \PY{k}{using} \PY{n}{Random} \PY{c}{\PYZsh{} for fixing the random numbres used }
         
@@ -313,7 +313,7 @@ stars}\label{the-mass-distribution-for-stars}
     We first plot the distribution (i.e. the power law) for masses in stars.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}3}]:} \PY{c}{\PYZsh{} density function for the mass }
+{\color{incolor}In [{\color{incolor}4}]:} \PY{c}{\PYZsh{} density function for the mass }
         \PY{k}{function} \PY{n}{f}\PY{p}{(}\PY{n}{x}\PY{p}{)}
         
             \PY{k}{if} \PY{n}{x} \PY{o}{\PYZgt{}=} \PY{l+m+mf}{0.08} \PY{o}{\PYZam{}\PYZam{}} \PY{n}{x} \PY{o}{\PYZlt{}=} \PY{l+m+mf}{0.5}
@@ -335,9 +335,9 @@ stars}\label{the-mass-distribution-for-stars}
         
         \PY{c}{\PYZsh{} plot desity function}
         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{p}{)}
-        \PY{n}{PyPlot}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{density}\PY{p}{)}
+        \PY{n}{PyPlot}\PY{o}{.}\PY{n}{semilogy}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{density}\PY{p}{)}
         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{M}\PY{l+s}{a}\PY{l+s}{s}\PY{l+s}{s}\PY{l+s}{\PYZdq{}}\PY{p}{)}
-        \PY{n}{PyPlot}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{D}\PY{l+s}{e}\PY{l+s}{n}\PY{l+s}{s}\PY{l+s}{i}\PY{l+s}{t}\PY{l+s}{y}\PY{l+s}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
+        \PY{n}{PyPlot}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{l}\PY{l+s}{o}\PY{l+s}{g}\PY{l+s}{ }\PY{l+s}{D}\PY{l+s}{e}\PY{l+s}{n}\PY{l+s}{s}\PY{l+s}{i}\PY{l+s}{t}\PY{l+s}{y}\PY{l+s}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
 \end{Verbatim}
 
 
@@ -355,7 +355,7 @@ is quite inefficient in this case, and for instance, using an importance
 distribution would probably make our calculations more efficient.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}4}]:} \PY{c}{\PYZsh{} hit\PYZhy{}and\PYZhy{}miss method to sample stars with masses accoring to the density function f}
+{\color{incolor}In [{\color{incolor}3}]:} \PY{c}{\PYZsh{} hit\PYZhy{}and\PYZhy{}miss method to sample stars with masses accoring to the density function f}
         \PY{k}{function} \PY{n}{hitandmiss}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}
         
             \PY{n}{y\PYZus{}max} \PY{o}{=} \PY{n}{round}\PY{p}{(}\PY{n}{f}\PY{p}{(}\PY{l+m+mf}{0.08}\PY{p}{)}\PY{p}{)} 
@@ -387,8 +387,9 @@ distribution would probably make our calculations more efficient.
 \end{Verbatim}
 
 
-    \paragraph{The probability for a
-supernova}\label{the-probability-for-a-supernova}
+    \paragraph{\texorpdfstring{The probability that a cluster with
+\(N_{\star}\) stars produces at least one
+supernovae}{The probability that a cluster with N\_\{\textbackslash{}star\} stars produces at least one supernovae}}\label{the-probability-that-a-cluster-with-n_star-stars-produces-at-least-one-supernovae}
 
     If the cluster contains stars with masses larger than \(8 M_{\circ}\),
 then these stars will explode as a supernovae. We will now compute the
@@ -396,56 +397,73 @@ probability that a cluster with \(N_{\star}=100, 300,1000\) stars
 contains at least one supernova, i.e. at least on star with mass larger
 than \(8 M_{\circ}\).
 
-We now compute the probabilities by sampling clusters with
-\(N_{\star}=100,300,1000\) stars using the hit-and-miss method and then
-estimating the probability that we have stars in the cluster with masses
-larger than \(8 M_{\circ}\).
+We now compute the probabilities by sampling \(\tilde{N}\) clusters with
+\(N_{\star}=100,300,1000\) stars using the hit-and-miss method. After
+sampling the clusters we then estimating the probability that a cluster
+contains at least one supernovae.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}5}]:} \PY{c}{\PYZsh{} set number of starts to generate}
-        \PY{n}{N\PYZus{}stars} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{100}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{,}\PY{l+m+mi}{1000}\PY{p}{]}
-        \PY{n}{prob\PYZus{}supernova} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{N\PYZus{}clusters} \PY{o}{=} \PY{l+m+mi}{100} \PY{c}{\PYZsh{} nbr of clusters }
+        \PY{n}{N\PYZus{}stars} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{100}\PY{p}{,}\PY{l+m+mi}{300}\PY{p}{,}\PY{l+m+mi}{1000}\PY{p}{]} \PY{c}{\PYZsh{} nbr of stars in a clusters}
+        \PY{n}{nbr\PYZus{}supernovae} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{N\PYZus{}clusters}\PY{p}{,} \PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)} \PY{c}{\PYZsh{} pre\PYZhy{}allocated matrix to store number of supernoveas in each cluster}
         
-        \PY{c}{\PYZsh{} genreate clusters and compute probabilities }
+        \PY{c}{\PYZsh{} generate clusters and find number of supernovae in each cluster}
         \PY{k}{for} \PY{n}{i} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}
-            \PY{n}{prob\PYZus{}supernova}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{findall}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{\PYZgt{}} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{hitandmiss}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{n}{N\PYZus{}stars}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+            \PY{k}{for} \PY{n}{j} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{N\PYZus{}clusters}
+                \PY{n}{nbr\PYZus{}supernovae}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{findall}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{\PYZgt{}} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{hitandmiss}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+            \PY{k}{end}
         \PY{k}{end}
         
-        \PY{c}{\PYZsh{} print computed prob for a supernovae}
-        \PY{n}{print}\PY{p}{(}\PY{n}{prob\PYZus{}supernova}\PY{p}{)}
+        \PY{c}{\PYZsh{} comute probabiltiy that a cluster contains at least one supernova}
+        \PY{n}{prob\PYZus{}supernovae} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)}
+        
+        \PY{k}{for} \PY{n}{i} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}
+            \PY{n}{prob\PYZus{}supernovae}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=}  \PY{n}{length}\PY{p}{(}\PY{n}{findall}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{nbr\PYZus{}supernovae}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{n}{N\PYZus{}clusters}
+        \PY{k}{end}
+        
+        \PY{n}{print}\PY{p}{(}\PY{n}{prob\PYZus{}supernovae}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
-[0.01, 0.00333333, 0.005]
+[0.26, 0.61, 0.95]
     \end{Verbatim}
 
     We obtain following probabilities for stars with masses larger than
 \(8 M_{\circ}\):
 
-\(P(\text{at least on star with mass} > M_{\circ})_{N_{\star}=100} = 0.01\)
+\(P(\text{at least on star with mass} > M_{\circ})_{N_{\star}=100} = 0.26\)
 
-\(P(\text{at least on star with mass} > M_{\circ})_{N_{\star}=300} = 0.0033\)
+\(P(\text{at least on star with mass} > M_{\circ})_{N_{\star}=300} = 0.61\)
 
-\(P(\text{at least on star with mass} > M_{\circ})_{N_{\star}=1000} = 0.005\)
+\(P(\text{at least on star with mass} > M_{\circ})_{N_{\star}=1000} = 0.95\)
 
     The next task is to compute the probability for stars with masses larger
-than \(8 M_{\circ}\) in clusters with \(50 \leq N_{\star} \leq 1000\)
+than \(8 M_{\circ}\) in clusters with \(50 \leq N_{\star} \leq 5000\)
 number of stars.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}6}]:} \PY{c}{\PYZsh{} set number of starts to generate}
-        \PY{n}{N\PYZus{}stars} \PY{o}{=} \PY{n}{floor}\PY{o}{.}\PY{p}{(}\PY{k+kt}{Int}\PY{p}{,}\PY{n}{LinRange}\PY{p}{(}\PY{l+m+mi}{50}\PY{p}{,}\PY{l+m+mi}{5000}\PY{p}{,}\PY{l+m+mi}{200}\PY{p}{)}\PY{p}{)}
-        \PY{n}{prob\PYZus{}supernova} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}5}]:} \PY{n}{N\PYZus{}stars} \PY{o}{=} \PY{n}{floor}\PY{o}{.}\PY{p}{(}\PY{k+kt}{Int}\PY{p}{,}\PY{n}{LinRange}\PY{p}{(}\PY{l+m+mi}{50}\PY{p}{,}\PY{l+m+mi}{5000}\PY{p}{,}\PY{l+m+mi}{50}\PY{p}{)}\PY{p}{)}
+        \PY{n}{nbr\PYZus{}supernovae} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{N\PYZus{}clusters}\PY{p}{,} \PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)}
         
-        \PY{c}{\PYZsh{} genreate clusters and compute probabilities }
+        \PY{c}{\PYZsh{} generate clusters and find number of supernovae in each cluster}
         \PY{k}{for} \PY{n}{i} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}
-            \PY{n}{prob\PYZus{}supernova}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{findall}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{\PYZgt{}} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{hitandmiss}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{n}{N\PYZus{}stars}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+            \PY{k}{for} \PY{n}{j} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{N\PYZus{}clusters}
+                \PY{n}{nbr\PYZus{}supernovae}\PY{p}{[}\PY{n}{j}\PY{p}{,}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{findall}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{\PYZgt{}} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{hitandmiss}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+            \PY{k}{end}
         \PY{k}{end}
         
-        \PY{c}{\PYZsh{} plot prob supernova}
+        
+        \PY{c}{\PYZsh{} compute probabiltiy that a cluster contains at least one supernova}
+        \PY{n}{prob\PYZus{}supernovae} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)}
+        
+        \PY{k}{for} \PY{n}{i} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}
+            \PY{n}{prob\PYZus{}supernovae}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=}  \PY{n}{length}\PY{p}{(}\PY{n}{findall}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{nbr\PYZus{}supernovae}\PY{p}{[}\PY{o}{:}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{n}{N\PYZus{}clusters}
+        \PY{k}{end}
+        
+        
         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{p}{)}
-        \PY{n}{PyPlot}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{,} \PY{n}{prob\PYZus{}supernova}\PY{p}{)}
+        \PY{n}{PyPlot}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{,} \PY{n}{prob\PYZus{}supernovae}\PY{p}{)}
         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{N}\PY{l+s}{u}\PY{l+s}{m}\PY{l+s}{b}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{ }\PY{l+s}{o}\PY{l+s}{f}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{ }\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{ }\PY{l+s}{c}\PY{l+s}{l}\PY{l+s}{u}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{\PYZdq{}}\PY{p}{)}
         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{E}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{.}\PY{l+s}{ }\PY{l+s}{p}\PY{l+s}{r}\PY{l+s}{o}\PY{l+s}{b}\PY{l+s}{.}\PY{l+s}{ }\PY{l+s}{f}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{ }\PY{l+s}{a}\PY{l+s}{t}\PY{l+s}{ }\PY{l+s}{l}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{ }\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{e}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{u}\PY{l+s}{p}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{v}\PY{l+s}{a}\PY{l+s}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
 \end{Verbatim}
@@ -457,9 +475,9 @@ number of stars.
     { \hspace*{\fill} \\}
     
     We can now conclude that the probability for at least one supernova is
-low if the cluster contains few stars (\(N_{\star} < 1000\)) and that
-the probability for at least on supernova converges to approximately
-\(0.004\).
+low if the cluster contains few stars and that the probability for at
+least on supernova converges to 1 when the cluster size increases, which
+is as expected.
 
 The next task is to compute the mean, median and lower quantile (the Q1
 quantile) expected number of supernovae for a cluster with
@@ -468,41 +486,36 @@ quantile) expected number of supernovae for a cluster with
 clusters.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}40}]:} \PY{c}{\PYZsh{} set number of starts and number of clusters to generate}
-         \PY{n}{N\PYZus{}clusters} \PY{o}{=} \PY{l+m+mi}{100}
-         \PY{n}{N\PYZus{}stars} \PY{o}{=} \PY{l+m+mi}{5000}
-         \PY{n}{prob\PYZus{}supernova} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{N\PYZus{}clusters}\PY{p}{)}
-         
-         \PY{c}{\PYZsh{} genreate clusters and compute probabilities }
-         \PY{k}{for} \PY{n}{i} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{N\PYZus{}clusters}
-             \PY{n}{prob\PYZus{}supernova}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{findall}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{\PYZgt{}} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{hitandmiss}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{n}{N\PYZus{}stars}
-         \PY{k}{end}
-         
-         \PY{c}{\PYZsh{} print statistics for the population of clusters }
-         \PY{n}{println}\PY{p}{(}\PY{n}{mean}\PY{p}{(}\PY{n}{prob\PYZus{}supernova}\PY{p}{)}\PY{p}{)}
-         \PY{n}{println}\PY{p}{(}\PY{n}{median}\PY{p}{(}\PY{n}{prob\PYZus{}supernova}\PY{p}{)}\PY{p}{)}
-         \PY{n}{println}\PY{p}{(}\PY{n}{quantile}\PY{p}{(}\PY{n}{prob\PYZus{}supernova}\PY{p}{,} \PY{l+m+mf}{0.25}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}7}]:} \PY{c}{\PYZsh{} set number of starts and number of clusters to generate}
+        
+        \PY{n}{N\PYZus{}clusters} \PY{o}{=} \PY{l+m+mi}{100}
+        \PY{n}{N\PYZus{}stars} \PY{o}{=} \PY{l+m+mi}{5000}
+        \PY{n}{nbr\PYZus{}supernovae} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{N\PYZus{}clusters}\PY{p}{)}
+        
+        \PY{k}{for} \PY{n}{i} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{N\PYZus{}clusters}
+            \PY{n}{nbr\PYZus{}supernovae}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{findall}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{\PYZgt{}} \PY{l+m+mi}{8}\PY{p}{,} \PY{n}{hitandmiss}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+        \PY{k}{end}
+        
+        \PY{n}{println}\PY{p}{(}\PY{n}{mean}\PY{p}{(}\PY{n}{nbr\PYZus{}supernovae}\PY{p}{)}\PY{p}{)}
+        \PY{n}{println}\PY{p}{(}\PY{n}{median}\PY{p}{(}\PY{n}{nbr\PYZus{}supernovae}\PY{p}{)}\PY{p}{)}
+        \PY{n}{println}\PY{p}{(}\PY{n}{quantile}\PY{p}{(}\PY{n}{nbr\PYZus{}supernovae}\PY{p}{,} \PY{l+m+mf}{0.25}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
-0.003648
-0.0036
-0.0032
+18.95
+19.0
+15.75
 
     \end{Verbatim}
 
     We obtain following statistics:
 
-\(\text{mean}(P(\text{at least on star with mass} > M_{\circ})_{N_{\star}=5000}) = 0.0036\)
+\(\text{mean} = 18.95\)
 
-\(\text{median}(P(\text{at least on star with mass} > M_{\circ})_{N_{\star}=5000}) = 0.0036\)
+\(\text{median} = 10.9\)
 
-\(Q1(P(\text{at least on star with mass} > M_{\circ})_{N_{\star}=5000})) = 0.032\)
-
-We conclude that the average probability for at least one supernova in a
-cluster with \(N_{\star} = 5000\) stars is \(0.0036\), which is in line
-with results we obtained earlier.
+\(Q_1 = 15.75\)
 
     \paragraph{\texorpdfstring{Number of stars in a cluster with a supernova
 with
@@ -513,26 +526,44 @@ cluster such that the cluster contains a supernova with mass
 \(M_{\text{sn}} \geq 25 M_{\circ}\). This question is of particular
 interest since our own sum is believed to have formed in such a cluster.
 
-To investigate this we compaute the probability for having a supernova
-with \(M_{\text{sn}} \geq 25 M_{\circ}\) in clusters with different
-number of stars \(N_{\star}\).
+To investigate this we compaute generate \(\tilde{N}\) clusters, for
+each cluster we then generate stars until one of the stars has a mass
+\(\geq 25 M_{\circ}\). We then plot the numbers of stars that we need in
+a cluster, such that the cluster contains one start with a mass
+\(\geq 25 M_{\circ}\) in a histogram, and print the average number of
+starts (mean) and standard deviation for the numbers of stars.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}41}]:} \PY{c}{\PYZsh{} set number of starts to generate}
-         \PY{n}{N\PYZus{}stars} \PY{o}{=} \PY{n}{floor}\PY{o}{.}\PY{p}{(}\PY{k+kt}{Int}\PY{p}{,}\PY{n}{LinRange}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{,}\PY{l+m+mi}{10}\PY{o}{\PYZca{}}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{)}
-         \PY{n}{prob\PYZus{}supernova} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}10}]:} \PY{c}{\PYZsh{} How many stars in the cluster that we need for the sun}
+         \PY{n}{N\PYZus{}clusters} \PY{o}{=} \PY{l+m+mi}{1000}
+         \PY{n}{nbr\PYZus{}stars\PYZus{}in\PYZus{}cluster} \PY{o}{=} \PY{n}{zeros}\PY{p}{(}\PY{n}{N\PYZus{}clusters}\PY{p}{)}
          
-         \PY{c}{\PYZsh{} genreate clusters and compute probabilities }
-         \PY{k}{for} \PY{n}{i} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}
-             \PY{n}{prob\PYZus{}supernova}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{length}\PY{p}{(}\PY{n}{findall}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{x} \PY{o}{\PYZgt{}} \PY{l+m+mi}{25}\PY{p}{,} \PY{n}{hitandmiss}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{n}{N\PYZus{}stars}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+         \PY{k}{for} \PY{n}{i} \PY{k+kp}{in} \PY{l+m+mi}{1}\PY{o}{:}\PY{n}{N\PYZus{}clusters} \PY{c}{\PYZsh{} loop over the number of clusters}
+         
+             \PY{n}{nbr\PYZus{}stars} \PY{o}{=} \PY{l+m+mi}{0}
+             \PY{n}{generate\PYZus{}starts} \PY{o}{=} \PY{k+kc}{true}
+         
+             \PY{c}{\PYZsh{} generate stars in cluster i until we obtain one start  with mass \PYZgt{} 25}
+             \PY{k}{while} \PY{n}{generate\PYZus{}starts}
+         
+                 \PY{n}{nbr\PYZus{}stars} \PY{o}{=} \PY{n}{nbr\PYZus{}stars} \PY{o}{+} \PY{l+m+mi}{1}
+                 \PY{n}{star\PYZus{}prop} \PY{o}{=} \PY{n}{hitandmiss}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+         
+                 \PY{k}{if} \PY{n}{star\PYZus{}prop} \PY{o}{\PYZgt{}=} \PY{l+m+mi}{25}
+                     \PY{n}{nbr\PYZus{}stars\PYZus{}in\PYZus{}cluster}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{nbr\PYZus{}stars}
+                     \PY{n}{generate\PYZus{}starts} \PY{o}{=} \PY{k+kc}{false}
+                 \PY{k}{end}
+             \PY{k}{end}
+         
          \PY{k}{end}
          
-         \PY{c}{\PYZsh{} plot prob for supernova}
          \PY{n}{PyPlot}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{p}{)}
-         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{,} \PY{n}{prob\PYZus{}supernova}\PY{p}{)}
-         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{,} \PY{n}{zeros}\PY{p}{(}\PY{n}{length}\PY{p}{(}\PY{n}{N\PYZus{}stars}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{k}\PY{l+s}{\PYZdq{}}\PY{p}{)}
-         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{N}\PY{l+s}{u}\PY{l+s}{m}\PY{l+s}{b}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{ }\PY{l+s}{o}\PY{l+s}{f}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{ }\PY{l+s}{i}\PY{l+s}{n}\PY{l+s}{ }\PY{l+s}{c}\PY{l+s}{l}\PY{l+s}{u}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{\PYZdq{}}\PY{p}{)}
-         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{E}\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{.}\PY{l+s}{ }\PY{l+s}{p}\PY{l+s}{r}\PY{l+s}{o}\PY{l+s}{b}\PY{l+s}{.}\PY{l+s}{ }\PY{l+s}{f}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{ }\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{u}\PY{l+s}{p}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{n}\PY{l+s}{o}\PY{l+s}{v}\PY{l+s}{a}\PY{l+s}{ }\PY{l+s}{w}\PY{l+s}{i}\PY{l+s}{t}\PY{l+s}{h}\PY{l+s}{ }\PY{l+s}{l}\PY{l+s}{a}\PY{l+s}{r}\PY{l+s}{g}\PY{l+s}{e}\PY{l+s}{ }\PY{l+s}{m}\PY{l+s}{a}\PY{l+s}{s}\PY{l+s}{s}\PY{l+s}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
+         \PY{n}{h} \PY{o}{=} \PY{n}{PyPlot}\PY{o}{.}\PY{n}{plt}\PY{p}{[}\PY{o}{:}\PY{n}{hist}\PY{p}{]}\PY{p}{(}\PY{n}{nbr\PYZus{}stars\PYZus{}in\PYZus{}cluster}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}
+         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{N}\PY{l+s}{u}\PY{l+s}{m}\PY{l+s}{b}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{ }\PY{l+s}{o}\PY{l+s}{f}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{ }\PY{l+s}{n}\PY{l+s}{e}\PY{l+s}{e}\PY{l+s}{d}\PY{l+s}{e}\PY{l+s}{d}\PY{l+s}{ }\PY{l+s}{t}\PY{l+s}{o}\PY{l+s}{ }\PY{l+s}{g}\PY{l+s}{e}\PY{l+s}{t}\PY{l+s}{ }\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{e}\PY{l+s}{ }\PY{l+s}{s}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{r}\PY{l+s}{t}\PY{l+s}{ }\PY{l+s}{w}\PY{l+s}{i}\PY{l+s}{t}\PY{l+s}{h}\PY{l+s}{ }\PY{l+s}{m}\PY{l+s}{a}\PY{l+s}{s}\PY{l+s}{s}\PY{l+s}{ }\PY{l+s}{\PYZgt{}}\PY{l+s}{ }\PY{l+s}{2}\PY{l+s}{5}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{PyPlot}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{F}\PY{l+s}{r}\PY{l+s}{e}\PY{l+s}{q}\PY{l+s}{.}\PY{l+s}{\PYZdq{}}\PY{p}{)}
+         
+         \PY{n}{println}\PY{p}{(}\PY{n}{mean}\PY{p}{(}\PY{n}{nbr\PYZus{}stars\PYZus{}in\PYZus{}cluster}\PY{p}{)}\PY{p}{)}
+         \PY{n}{println}\PY{p}{(}\PY{n}{std}\PY{p}{(}\PY{n}{nbr\PYZus{}stars\PYZus{}in\PYZus{}cluster}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 
 
@@ -541,15 +572,28 @@ number of stars \(N_{\star}\).
     \end{center}
     { \hspace*{\fill} \\}
     
-\begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}41}]:} PyObject Text(24,0.5,'Est. prob. for a supernova with large mass')
-\end{Verbatim}
-            
+    \begin{Verbatim}[commandchars=\\\{\}]
+2049.133
+2004.9092399336614
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Warning: `getindex(o::PyObject, s::Symbol)` is deprecated in favor of dot overloading (`getproperty`) so elements should now be accessed as e.g. `o.s` instead of `o[:s]`.
+│   caller = top-level scope at In[10]:25
+└ @ Core In[10]:25
+
+    \end{Verbatim}
+
     Out simulations show that a cluster that contains a supernova with
-\(M_{\text{sn}} \geq 25 M_{\circ}\) likely containes more than
-\(N_{\star} = 5000\) stars, since quite many clusters with less than
-\(N_{\star} = 5000\) stars contain no supernova with mass
-\(M_{\text{sn}} \geq 25 M_{\circ}\).
+\(x \pm y= M_{\text{sn}} \geq 25 M_{\circ}\) likely containes
+\(22049 \pm 2005\) number of stars, where \(x\) is the average number of
+stars needed and y the standard deviation for the number of stars.
+However, we can also conclude that the distribution of stars that we
+need in a cluster such that we have one star with
+\(M_{\text{sn}} \geq 25 M_{\circ}\) is exponential, which also means
+that the mean value \(2027.5\) is not very infomative. Something that we
+also can conclude from the large standard deviation.
 
 
     % Add a bibliography block to the postdoc
