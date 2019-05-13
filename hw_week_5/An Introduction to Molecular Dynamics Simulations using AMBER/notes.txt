@@ -2,7 +2,7 @@ Results for the tutorial at http://ambermd.org/tutorials/basic/tutorial0/index.h
 
 To load AmberTools on LUNARC run:
 
-ml load  icc/2017.4.196-GCC-6.4.0-2.28
+ml load icc/2017.4.196-GCC-6.4.0-2.28
 ml load OpenMPI/2.1.1
 ml load Ambertools/18.10
 
@@ -23,3 +23,14 @@ the total MD sim took: ~ 8.5 min (should take 10 min according to tutorial)
 I will create the plots with julia 
 
 could not run $AMBERHOME/bin/cpptraj -p parm7 -i rmsd.cpptraj &> cpptraj.log got some strange errors... had to use the provided files 
+
+use this to use grace module spider grace/5.1.25
+
+
+ml load OpenMPI/1.10.2 
+ml load impi/5.1.2.150 
+ml load impi/5.1.2.150
+ml load grace/5.1.25
+ 
+
+
