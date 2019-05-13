@@ -1,0 +1,25 @@
+Results for the tutorial at http://ambermd.org/tutorials/basic/tutorial0/index.htm
+
+To load AmberTools on LUNARC run:
+
+ml load  icc/2017.4.196-GCC-6.4.0-2.28
+ml load OpenMPI/2.1.1
+ml load Ambertools/18.10
+
+To use VMD we have to load the correct module with 
+
+module load vmd/1.9.2
+
+The run script for the MD sim that we run is in the file: job_amber_md.sh
+
+Comments on tutorial:
+
+Could not run saveamberparm foo parm7 rst7 - had to use the provided files instead 
+
+The command tail -f 03_Prod.out will not work when we run the sim on lunarc 
+
+the total MD sim took: ~ 8.5 min (should take 10 min according to tutorial)
+
+I will create the plots with julia 
+
+could not run $AMBERHOME/bin/cpptraj -p parm7 -i rmsd.cpptraj &> cpptraj.log got some strange errors... had to use the provided files 

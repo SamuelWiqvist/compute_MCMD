@@ -1,0 +1,19 @@
+Error: '02_Heat.mdcrd': No such file or directory
+Error: Could not set up input trajectory '02_Heat.mdcrd'.
+	1 errors encountered reading input.
+Error: Error(s) occurred during execution.
+
+CPPTRAJ: Trajectory Analysis. V18.01
+    ___  ___  ___  ___
+     | \/ | \/ | \/ | 
+    _|_/\_|_/\_|_/\_|_
+
+| Date/time: 05/13/19 16:21:14
+| Available memory: 7.895 GB
+
+	Reading 'parm7' as Amber Topology
+	Radius Set: modified Bondi radii (mbondi)
+INPUT: Reading input from 'rmsd.cpptraj'
+  [trajin 02_Heat.mdcrd]
+TIME: Total execution time: 0.0082 seconds.
+

@@ -1,0 +1,5 @@
+trajin 02_Heat.mdcrd
+trajin 03_Prod.mdcrd
+reference 01_Min.rst
+autoimage
+rms reference mass out 02_03.rms time 2.0 :2
