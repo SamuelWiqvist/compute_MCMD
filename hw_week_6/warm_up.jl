@@ -1,4 +1,5 @@
 using PyPlot
+using Statistics
 
 # Diff eq: dN(t)/dt = -f(t)N(t)
 # f(t) = 1 + cos(t)
@@ -49,10 +50,28 @@ function veto(steps::Int)
     return t_eval
 end
 
-t_eval = veto(10)
+nbr_runs = 100
+nbr_steps = 10
+
+event_times = zeros(nbr_steps, nbr_runs)
+
+veto(nbr_steps)
+
+for i = 1:nbr_runs
+    event_times[:,i] = veto(nbr_steps)
+end
+
+
+event_times
+
+
+event_times_mean = mean(event_times, dims = 2)
+
+
+
 
 PyPlot.figure()
-PyPlot.plot(t_eval)
+PyPlot.plot(event_times_mean)
 
 PyPlot.figure()
-h = PyPlot.plt.hist(t_eval,10)
+h = PyPlot.plt.hist(event_times[3,:],10)

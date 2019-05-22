@@ -9,7 +9,7 @@ L = 10
 N = L*L
 E_min = -2*N
 
-q = 5 # spins
+q = 10 # spins
 J = 1 # interaction strength (we have the same interaction strength for all states)
 
 S_start = ones(L,L)
@@ -114,10 +114,9 @@ end
 
 
 # set system parameters
-T = 0.7145
-k = 1.3806*10^(-23)
-β = 1/(k*T) # tempering
-iter = 10^6 # nbr of MC interstions
+T = 0.7145 # run metroplis at T_c
+β = 1/T # tempering
+iter = 10^7 # nbr of MC interstions
 
 # run Metroplis algorithm
 energy_vec, a_vec = @time metroplis(S_start, iter, J, β)

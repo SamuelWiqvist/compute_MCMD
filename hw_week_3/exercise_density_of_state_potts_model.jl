@@ -144,11 +144,16 @@ end
 
 # test H_potts
 L = 10
-H_potts(zeros(L,L),1)
+S = 2*ones(L,L)
+H_potts(S,1)
 -2*L*L
 
+S[1,1] = 1
+H_potts(S,1)
 
+S
 # run Wang-Landau algorithm
+
 
 # algorithm settings
 q = 10 # spins
@@ -211,6 +216,10 @@ PyPlot.figure()
 PyPlot.plot(eval_point, log_g_tilde_normalized)
 PyPlot.xlabel("Energy")
 PyPlot.ylabel(L"log \tilde{g}")
+
+
+# analytical value for T_c
+T_c_exact = 1/log(1+sqrt(q))
 
 
 T = 0.7145
