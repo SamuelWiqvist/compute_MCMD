@@ -7,16 +7,19 @@ using Statistics
 
 # analytical solution
 
-N(t) = exp(-(t+sin(t)))
+N(t) = 1000*exp(-t-sin(t))
 
-t = 0:0.01:4
+t = 0:0.01:10
 
 analytical_sol = zeros(length(t))
 
 for i in 1:length(t); analytical_sol[i] = N(t[i]); end
 
+
+analytical_sol
+
 PyPlot.figure()
-PyPlot.plot(analytical_sol)
+PyPlot.plot(t, analytical_sol)
 
 
 # veto algorithm
@@ -24,8 +27,6 @@ PyPlot.plot(analytical_sol)
 i = 0; t_old = 0; t_end = 4
 
 f(t) = 1 + cos(t)
-
-t_eval = zeros(10)
 
 function veto(steps::Int)
 
@@ -50,8 +51,8 @@ function veto(steps::Int)
     return t_eval
 end
 
-nbr_runs = 100
-nbr_steps = 10
+nbr_runs = 50
+nbr_steps = 100
 
 event_times = zeros(nbr_steps, nbr_runs)
 
@@ -68,10 +69,14 @@ event_times
 event_times_mean = mean(event_times, dims = 2)
 
 
+[0;event_times_mean]
 
+
+collect(1000:-1:900)
 
 PyPlot.figure()
-PyPlot.plot(event_times_mean)
+PyPlot.plot(t, analytical_sol)
+PyPlot.plot([0;event_times[:,1]],collect(1000:-1:900))
 
 PyPlot.figure()
 h = PyPlot.plt.hist(event_times[3,:],10)
