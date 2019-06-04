@@ -23,7 +23,7 @@ L = 10
 N = L*L
 E_min = -2*N
 
-q = 10 # spins
+q = 10 # spins test with q = 20
 J = 1 # interaction strength (we have the same interaction strength for all states)
 
 S_start = ones(L,L)
@@ -129,9 +129,9 @@ end
 
 
 # set system parameters
-T = 0.7145 # run metroplis at T_c
+T = 0.588 #0.7145 # run metroplis at T_c
 β = 1/T # tempering
-iter = 5*10^6 # nbr of MC interstions
+iter = 2*10^6 # nbr of MC interstions
 
 # run Metroplis algorithm
 run_time_metroplis = @elapsed energy_vec, a_vec = metroplis(S_start, iter, J, β)
@@ -159,7 +159,6 @@ println(ess_per_sec_metroplis)
 ################################################################################
 # Wang-Landau
 ################################################################################
-
 
 # Wang-Landau algorithm with one fixed f value
 function wang_landau_one_iteration(S_start, iter_max, J, q, f, log_g_tilde, E_matrix)
@@ -229,7 +228,7 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, log_g_tilde, E_matrix)
 
     # full Wang-Landau algorithm
     f_save = zeros(nbr_reps)
-    E_vec_store = zeros(iter, nbr_reps)
+    iter_add = 500000
 
     for i in 1:nbr_reps
 
@@ -237,7 +236,7 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, log_g_tilde, E_matrix)
 
         a_vec, E_vec, E_visit_counter, iter_done = wang_landau_one_iteration(S_start, iter, J, q, f, log_g_tilde, E_matrix)
 
-        E_vec_store[:,i] = E_vec
+        iter = iter + iter_add
 
         f_save[i] = f
 
@@ -255,7 +254,7 @@ function wang_landau(nbr_reps,iter, J, q, f, S_start, log_g_tilde, E_matrix)
 
     end
 
-    return f_save, E_vec_store
+    return f_save
 
 end
 
@@ -312,7 +311,6 @@ PyPlot.colorbar()
 # only run first step
 run_time_wl_one_step = @elapsed a_vec, E_vec, E_visit_counter, iter_done = @time wang_landau_one_iteration(S_start, iter, J, q, f, log_g_tilde, E_matrix)
 
-
 # plotting
 PyPlot.figure(figsize=(8,5))
 PyPlot.plot(1:iter, E_vec)
@@ -329,16 +327,12 @@ println(ess_wl_one_step)
 println(ess_per_sec_wl_one_step)
 
 # run full w-l
-f_save, E_vec_store = @time wang_landau(nbr_reps,iter, J, q, f, S_start, log_g_tilde, E_matrix)
+f_save = @time wang_landau(nbr_reps,iter, J, q, f, S_start, log_g_tilde, E_matrix)
 
-PyPlot.figure(figsize=(8,5))
-PyPlot.plot(1:iter, E_vec_store[:,1])
-PyPlot.xlabel("Iteration")
-PyPlot.ylabel("Energy")
 
 PyPlot.figure()
 PyPlot.plot(f_save)
-PyPlot.xlabel("Iteration")
+PyPlot.xlabel("Step")
 PyPlot.ylabel(L"f")
 
 PyPlot.figure()
@@ -360,10 +354,10 @@ PyPlot.ylabel(L"log \tilde{g}")
 
 
 # analytical value for T_c
-T_c_exact = 1/log(1+sqrt(q))
+T_c_exact = 1/log(1+sqrt(q)) # only holds for infinint system dimension
 
 
-T = 0.7145
+T = 0.588 #0.7138 #0.7145
 
 # T_critical 0.7145
 # 0.7 rigth mode
@@ -387,32 +381,3 @@ PyPlot.figure()
 PyPlot.plot(eval_point,  P_T_normalized)
 PyPlot.ylabel(L"P_T(E)")
 PyPlot.xlabel(L"Energy")
-
-
-# wang_landau one iteration
-
-map!(x -> x = rand(1:q), S_start, S_start)
-
-# only run first iteration of wang-landau
-f = 2.7
-log(f)
-log_g_tilde = log.(ones(length(eval_point)))
-
-a_vec, E_vec, E_visit_counter, iter_max = @time wang_landau_one_iteration(S_start, 10000000, J, q, f, log_g_tilde, E_matrix)
-
-sum(a_vec)/10000000*100
-
-PyPlot.figure()
-PyPlot.plot(eval_point, E_visit_counter, "*-")
-PyPlot.xlabel("Iteration")
-PyPlot.ylabel("Energy")
-
-PyPlot.figure()
-PyPlot.plot(E_vec)
-PyPlot.xlabel("Iteration")
-PyPlot.ylabel("Energy")
-
-PyPlot.figure()
-PyPlot.plot(eval_point, log_g_tilde)
-PyPlot.xlabel("Energy")
-PyPlot.ylabel(L"log \tilde{g}")
