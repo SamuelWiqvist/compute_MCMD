@@ -9,12 +9,25 @@ struct Decay{A,B}
     p::B
 end
 
-function I_a_bc(parent::String, z_min::Real, z_max::Real, α_s::Real = 0.2)
+P_q_qg(z::Real) = 4/3*(1+z^2)/(1-z)
+P_g_gg(z::Real) = 3*(1-z*(1-z))^2/(z*(1-z))
+
+function P_a_bc(parent::String, z::Real)
+
+    if parent == "q"
+        return P_q_qg(z)
+    else
+        return P_g_gg(z)
+    end
+
+end
+
+function I_a_bc(parent::String, z_min::Real, z_max::Real, Ea::Real, α_s::Real = 0.2)
 
     if parent == "q"
         return α_s/(2*π)*(8/3)*log((1-z_min)/(1-z_max))
     else
-        return  α_s/(2*π)*(z_max-z_min)
+        return  α_s/(2*π)*6*log( (z_max*(1-z_min) ) / ((z_min)*(1-z_max)) )
     end
 end
 
@@ -24,6 +37,7 @@ function shower(data::Vector)
 
     p_new = 0.
     z_new = 0.
+    a_prob = 0.
 
     #for j = 1:2
 
@@ -72,15 +86,11 @@ function shower(data::Vector)
                     z_min_tilde = 1/Ea # what should these values be???
                     z_max_tilde = 1-1/Ea
 
-
-                    I = I_a_bc(parent, z_min_tilde, z_max_tilde)
-
-                    println(z_min_tilde)
-                    println(z_max_tilde)
-
+                    I = I_a_bc(parent, z_min_tilde, z_max_tilde, Ea)
 
                     if I < 0
                         println(parent)
+                        println(p_old)
                         println(I)
                         println(Ea)
                         println(z_min_tilde)
@@ -91,6 +101,7 @@ function shower(data::Vector)
 
                     p2_new = p_old^2*rand()^(1/I)
                     p_new = sqrt(p2_new)
+                    p_old = p_new
 
 
                     if p_new <= 1 #|| p_new == Inf
@@ -98,22 +109,28 @@ function shower(data::Vector)
                         p_new = 0.
                         parent = "dead"
                         sample = false
+                    elseif p_new > Ea/2
+                        p_old = p_new
+                        # prop to state for event
                     else
 
                         if parent == "q"
                             z_new = 1 - (1 - z_min_tilde)*((1-z_max_tilde)/(1-z_min_tilde))^(rand())
                         else
-                            z_new = - z_min_tilde + rand()*(z_max_tilde-z_min_tilde)
+                            R = rand()
+                            a = (z_min_tilde/(1-z_min_tilde))*(z_max_tilde/(1-z_max_tilde))^(R)*(z_min_tilde/(1-z_min_tilde))^(-R)
+                            z_new = 1/(1/a+1)
                         end
-
-                        p_old = p_new
 
                         z_min = p_new/Ea # what should these values be???
                         z_max = 1-p_new/Ea
 
-
                         if z_new <= z_max && z_new >= z_min
-                            a_prob = (1 + z_new^2)/2
+                            if parent == "q"
+                                a_prob = (1 + z_new^2)/2
+                            else
+                                a_prob = (1 - z_new*(1-z_new))^2/2
+                            end
                             if a_prob < rand()
                                 sample = false
                             end
@@ -130,18 +147,18 @@ function shower(data::Vector)
             Ec = (1-z_new)*Ea
 
             if parent == "q"
-                Pa = Decay(parent, "q", Eb, p_new)
-                Pb = Decay(parent, "g", Ec, p_new)
+                Pb = Decay(parent, "q", Eb, p_new)
+                Pc = Decay(parent, "g", Ec, p_new)
             elseif parent == "g"
-                Pa = Decay(parent, "g", Eb, p_new)
-                Pb = Decay(parent, "g", Ec, p_new)
+                Pb = Decay(parent, "g", Eb, p_new)
+                Pc = Decay(parent, "g", Ec, p_new)
             else
-                Pa = Decay(parent, "dead", 0., 0.)
                 Pb = Decay(parent, "dead", 0., 0.)
+                Pc = Decay(parent, "dead", 0., 0.)
             end
 
-            append!(data,[Pa])
             append!(data,[Pb])
+            append!(data,[Pc])
 
 
         end
@@ -199,7 +216,7 @@ stats = zeros(2,nbr_runs)
 for i = 1:nbr_runs
 
     #println(i)
-    E_0 = 400.
+    E_0 = 100.
     pmax = E_0
     p2max = pmax^2
 

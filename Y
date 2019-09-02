@@ -1,0 +1,7 @@
+The algorithm almost works
+
+Need to fix:
+
+1) function for g -> gg
+
+
