@@ -53,8 +53,12 @@ Random.seed!(100)
 event_times = veto(10^6)
 
 PyPlot.figure()
-h = PyPlot.plt[:hist](event_times,100,normed=1)
+PyPlot.plt[:hist](event_times,100,normed=1)
 PyPlot.xlabel("t")
 PyPlot.savefig("veto_event_times.pdf")
 
+PyPlot.figure()
+PyPlot.plt[:hist](event_times,100,normed=1)
 PyPlot.plot(t, analytical_sol)
+PyPlot.xlabel("t")
+PyPlot.savefig("analytical_and_mc.pdf")
