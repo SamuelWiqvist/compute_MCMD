@@ -44,7 +44,6 @@ function shower(data::Vector)
     simulate = true
 
     steps = 0
-    #while simulate
 
     while simulate
 
@@ -80,10 +79,8 @@ function shower(data::Vector)
                 sample = true
 
                 while sample
-                    # veto step in time, code adapted from https://github.com/kalaee/MCMD/tree/master/parton
 
-
-                    z_min_tilde = 1/Ea # what should these values be???
+                    z_min_tilde = 1/Ea
                     z_max_tilde = 1-1/Ea
 
                     I = I_a_bc(parent, z_min_tilde, z_max_tilde, Ea)
@@ -118,8 +115,10 @@ function shower(data::Vector)
                             z_new = 1 - (1 - z_min_tilde)*((1-z_max_tilde)/(1-z_min_tilde))^(rand())
                         else
                             R = rand()
-                            a = (z_min_tilde/(1-z_min_tilde))*(z_max_tilde/(1-z_max_tilde))^(R)*(z_min_tilde/(1-z_min_tilde))^(-R)
-                            z_new = 1/(1/a+1)
+                            aR = ((z_max_tilde*(1-z_min_tilde) ) / ((z_min_tilde)*(1-z_max_tilde)))^R
+                            z_new = aR/(1+aR)
+                            #a = (z_min_tilde/(1-z_min_tilde))*(z_max_tilde/(1-z_max_tilde))^(R)*(z_min_tilde/(1-z_min_tilde))^(-R)
+                            #z_new = 1/(1/a+1)
                         end
 
                         z_min = p_new/Ea # what should these values be???
@@ -210,13 +209,14 @@ println(nbr_q_qg)
 
 # mutiple runs
 
+
 nbr_runs = 100000
 stats = zeros(2,nbr_runs)
 
 for i = 1:nbr_runs
 
     #println(i)
-    E_0 = 100.
+    E_0 = 400.
     pmax = E_0
     p2max = pmax^2
 
@@ -243,8 +243,8 @@ for i = 1:nbr_runs
 end
 
 @printf "----------------\n"
-@printf "nbr_g (mena): %f\n" mean(stats[1,:])
-@printf "nbr_g (std): %f\n" std(stats[1,:])
+@printf "nbr_q_qg (mena): %.2f\n" mean(stats[2,:])
+@printf "nbr_q_qg (std): %.2f\n" std(stats[2,:])
 
-@printf "nbr_q_qg (mena): %f\n" mean(stats[2,:])
-@printf "nbr_q_qg (std): %f\n" std(stats[2,:])
+@printf "nbr_g (mena): %.2f\n" mean(stats[1,:])
+@printf "nbr_g (std): %.2f\n" std(stats[1,:])
