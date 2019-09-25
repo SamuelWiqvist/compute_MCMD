@@ -52,6 +52,10 @@ end
 Random.seed!(100)
 event_times = veto(10^6)
 
+# analytical probability for an event at time t
+P(t) = exp.(-t.-sin.(t)).*(cos.(t) .+ 1)
+
+
 PyPlot.figure()
 PyPlot.plt[:hist](event_times,100,normed=1)
 PyPlot.xlabel("t")
@@ -59,6 +63,6 @@ PyPlot.savefig("veto_event_times.pdf")
 
 PyPlot.figure()
 PyPlot.plt[:hist](event_times,100,normed=1)
-PyPlot.plot(t, analytical_sol)
+PyPlot.plot(t, P(t))
 PyPlot.xlabel("t")
 PyPlot.savefig("analytical_and_mc.pdf")
