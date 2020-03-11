@@ -388,15 +388,190 @@ following command
 module load vmd/1.9.2
 \end{verbatim}
 
+\subsubsection{Section 1}\label{section-1}
+
 After configuring the layout I have follwoing layout for VMD
 
 \begin{figure}
 \centering
 \includegraphics{Screenshot_vmd_setup.png}
-\caption{alt text}
+\caption{VMD layout}
 \end{figure}
 
-Some more text
+\subsubsection{Section 2}\label{section-2}
+
+The next step is to load pde file of the Liver Alcohol Dehydrogenase
+(LADH) molecule. After loading the file to VMD and testing out the
+rotate, scale and translate of the OpenGl garphical interface I obtian
+following figure
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_ladh_in_opengl.png}
+\caption{Shows the LAGH molecule in the OpenGL window}
+\end{figure}
+
+\subsubsection{Section 3}\label{section-3}
+
+In this step I used thegraphical representation menue to chenage how to
+display the LADH molecule. First I remove all the water molecules with
+the setting \texttt{all\ not\ water}, this however didnt change the
+visalization of the LADH molecule that much. Then I tried changeing the
+visalization by modifying the coloring method and the drawing method.
+When using coloring method \texttt{Secondary\ Structure} and drawing
+method \texttt{NewCartoon} I obtained following visulaization of the
+LADH molecule
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_ladh_new_vis.png}
+\caption{Visualization using coloring method
+\texttt{Secondary\ Structure} and drawing method \texttt{NewCartoon}}
+\end{figure}
+
+The last part of this section was to change the representation of the
+mulecule. When using the representation feature to only display the
+chain A of the protine we obtained the following visualtiozation
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_ladh_only_chain_A.png}
+\caption{Visualization displaying only chain A}
+\end{figure}
+
+\subsubsection{Section 4}\label{section-4}
+
+First we load the mulecule stored in the \texttt{TRPcage.pdb}, and then
+after setting up the proper visulazation we obtianed follwing figure
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_first_fig_trp.png}
+\caption{First Visualization of TRP}
+\end{figure}
+
+Then we loaded differnt versions of the molecule representing eaither
+the minimized or unminimuizes strucuture: The minimized structure is
+repsented below
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_fig_trp_min.png}
+\caption{First Visualization of minimized structure}
+\end{figure}
+
+\subsubsection{Section 5}\label{section-5}
+
+In the first step of this section we load two structcures and fix one of
+them, so that we can rotate the other one whitout moving the first one.
+For this task we obtain following figure
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_rotate_one.png}
+\caption{Figure of two molecules where we rotate one of the structures}
+\end{figure}
+
+The next step is to compute the RMSD between two structures where one of
+the structures is a shifter version of the other. For this task we otain
+RMSD to be \(\approx 2.18\) angstroms, we then algin the structues and
+agin compute the RMSD. The RMSD between the algien structures was
+\(\approx 0.57\) angstroms. The algines structes are presented below.
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_algined.png}
+\caption{The two algined structures}
+\end{figure}
+
+\subsubsection{Section 6}\label{section-6}
+
+In this task we use VMD to visulize the trejectory path compute using
+AMBER. The visualization and playback fo the strucutre during the
+simualtion worked well.
+
+\subsubsection{Section 7}\label{section-7}
+
+The task here was to save the simulation at fram 300 to a seperate
+\texttt{pdb} file. Hwever, when I tried to do this I got ther error
+message \(Error writing trajectory file\). So I could not complete this
+task. Instead I downloaded the file I should have been able to create
+from the tutrorial web site.
+
+\subsubsection{Section 8}\label{section-8}
+
+In this task we sue the system parameter tracking capabilities to show
+the distance between parts of the strucutre during the simulation. Frame
+\(294\) of the simulationwhere we keep track of the distance between the
+two ends of the structre is presented below
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_dist_ends.png}
+\caption{Frame 294 where we show the disatnce betweent he ends of
+structure}
+\end{figure}
+
+\subsubsection{Section 9}\label{section-9}
+
+The final part included using VMD to create a \texttt{mpg} movie.
+However, I could not create the movie since I got the error
+\texttt{Program\ not\ found} saying that VMD could not locate
+'ppmtompeg', when trying to create the movie.
+
+    \section{Loop dynamics of the HIV-1 integrase core
+domain}\label{loop-dynamics-of-the-hiv-1-integrase-core-domain}
+
+Agian I start of with loading Amber to the lunarc system.
+
+The idea for this tutorial was to run an MD simulations but serveal of
+the data setup steps faild when I tried to run them So I ccould not
+complite this tutorial.
+
+    \section{A case study in folding
+Trp-Cage}\label{a-case-study-in-folding-trp-cage}
+
+\subsubsection{Section 1}\label{section-1}
+
+In this section we were supposed to use xleap to create the starting
+structure. However, I did not managae to do this paart (I could not
+understand how to include the force field). So I instead downloaded the
+resultsing files from the tutorial web page.
+
+In this first section we use xleap to create teh structure direcly from
+the amino acide sequence. We present the sequence below using the edit
+\texttt{command} in \texttt{xleap}
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_xleap.png}
+\caption{The sequnece created in xleap}
+\end{figure}
+
+The final step here is to save the structure in a \texttt{lib} and
+\texttt{pdb} file,
+
+\subsubsection{Section 2}\label{section-2}
+
+The task in this section was to load the Amber parameters of the
+structur and save them in new files. This steo work well without any
+problems.
+
+\subsubsection{Section 3}\label{section-3}
+
+In this section we run the minimization in Amber using the input files
+we created in Section 1 and 2. The minimization ran without any
+problems. After running the minimization we used VMD to view the final
+results, which are presented below. InVMD we aslo compute the RMSD
+between the two structures and the RMSD was \(\approx 0.54\) angstrom.
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_input_and_final.png}
+\caption{Comparing the input structure to the final minimized structure}
+\end{figure}
+
+\subsubsection{Section 4}\label{section-4}
 
 
     % Add a bibliography block to the postdoc
