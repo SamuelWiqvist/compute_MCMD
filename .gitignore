@@ -3,4 +3,8 @@
 *.pdf
 *.eps
 *.tar.gz
+*.out
+*.rst
+*.mdcrd.gz
+*.mdcrd
 .Rproj.user
