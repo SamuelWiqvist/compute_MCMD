@@ -1,0 +1,62 @@
+ This tutorial consists of  nine sections:
+
+section1.htm : Loading VMD and Customizing the Initial Window Layout
+
+
+load VMD: module load vmd/1.9.2
+
+set  initial layout:
+
+# turn on lights 0 and 1
+light 0 on
+light 1 on
+light 2 off
+light 3 off
+
+# position the stage and axes
+axes location off
+stage location off
+
+# position and turn on menus
+menu main on
+menu graphics on
+menu files on
+
+menu main move 5 196
+menu graphics move 5 455
+menu files move 800 750
+
+display projection orthographic
+
+Could not find the file on lunarc... ls -la protected...
+
+section2.htm : Loading a PDB File
+
+
+load molecule from file: vmd 1LDY.pdb
+
+keybord short cuts r,t,s 
+
+can reset to start view: Display->Reset View 
+
+mouse options: traslate move in plance, scale zoom in/out
+
+section3.htm : Changing Representations
+
+could plot the cartoon representation, could not do the other part no values poped up...
+
+
+section4.htm : Loading AMBER inpcrd and restrt files
+
+In this tutorial we use differnt files for the topology and the molecule. We also look at an example where the pdb file is note good 
+
+section5.htm : Aligning Molecules and Measuring RMSD's
+
+section6.htm : Visualizing AMBER Trajectories
+
+section7.htm : Saving a Single Set of Coordinates
+
+section8.htm : Following System Parameters Over the Course of a Trajectory
+
+section9.htm : Creating a Movie
+

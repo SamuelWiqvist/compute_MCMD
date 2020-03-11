@@ -8,7 +8,7 @@ ml load Ambertools/18.10
 
 To use VMD we have to load the correct module with 
 
-module load vmd/1.9.2
+ml load vmd/1.9.2
 
 The run script for the MD sim that we run is in the file: job_amber_md.sh
 
@@ -26,11 +26,12 @@ could not run $AMBERHOME/bin/cpptraj -p parm7 -i rmsd.cpptraj &> cpptraj.log got
 
 use this to use grace module spider grace/5.1.25
 
-
+ml load GCC/4.9.3-2.25
 ml load OpenMPI/1.10.2 
 ml load impi/5.1.2.150 
-ml load impi/5.1.2.150
 ml load grace/5.1.25
  
 
-
+xmgrace summary.TEMP
+xmgrace summary.DENSITY
+xmgrace summary.ETOT summary.EPTOT summary.EKTOT
