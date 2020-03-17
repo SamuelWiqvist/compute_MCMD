@@ -1,0 +1,5 @@
+parm trpzip2.ff10.mbondi.parm7
+trajin trpzip2.gb.nc
+distance end-to-end :1 :13 out dist-end-to-end.agr
+run
+writedata end-to-end.dat end-to-end

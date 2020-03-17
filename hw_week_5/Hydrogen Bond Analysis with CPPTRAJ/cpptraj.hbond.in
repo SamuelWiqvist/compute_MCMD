@@ -1,0 +1,19 @@
+# Hydrogen bond analysis with cpptraj 
+# Load topology and trajectory
+parm trpzip2.ff10.tip3p.parm7
+trajin trpzip2.unfold.nc
+# All solute-solute and solute-solvent hydrogen bonds + water bridges.
+hbond All out All.hbvtime.dat solventdonor :WAT solventacceptor :WAT@O \
+  avgout All.UU.avg.dat solvout All.UV.avg.dat bridgeout All.bridge.avg.dat
+# Backbone hydrogen bonds only. Save time series data.
+hbond Backbone :1-12@C,O,N,H avgout BB.avg.dat series uuseries bbhbond.gnu
+# Create file containing only number of solute-solute and solute-solvent
+# hydrogen bonds, and number of solute-solvent-solute bridges.
+create nhbvtime.agr All[UU] Backbone[UU] All[UV] All[Bridge]
+# Calculate RMSD to first frame.
+rms BBrmsd :1-12@C,CA,N out BBrmsd.agr
+# Run to actually find hydrogen bonds and generate data.
+run
+# Perform lifetime analysis on backbone hydrogen bonds
+lifetime Backbone[solutehb] out backbone.lifetime.dat
+runanalysis

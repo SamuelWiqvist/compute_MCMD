@@ -1,0 +1,43 @@
+# 03/17/20 17:51:56
+parm trpzip2.ff10.mbondi.parm7
+trajin trpzip2.gb.nc
+rms ToFirst :1-13&!@H= first out rmsd1.agr mass
+run
+xmgrace rmsd1.agr
+reference trpzip2.1LE1.1.rst7
+reference trpzip2.1LE1.10.rst7 [tenth_member]
+reference trpzip2.gb.nc lastframe [last]
+list ref
+rms ToMember1 :1-13&!@H= reference out rmsd2.agr
+rms ToMember10 :1-13&!@H= refindex 1 out rmsd2.agr
+rms ToLast :1-13&!@H= ref [last] out rmsd2.agr
+rms ToLast :1-13&!@H= ref [last] out rmsd2.agr
+run
+quit
+# 03/17/20 17:59:50
+reference trpzip2.1LE1.1.rst7
+quit()
+quit
+# 03/17/20 18:00:44
+reference trpzip2.1LE1.1.rst7
+quit
+# 03/17/20 18:01:14
+parm trpzip2.ff10.mbondi.parm7
+trajin trpzip2.gb.nc
+rms ToFirst :1-13&!@H= first out rmsd1.agr mass
+run
+reference trpzip2.1LE1.1.rst7
+reference trpzip2.1LE1.10.rst7 [tenth_member]
+reference trpzip2.gb.nc lastframe [last]
+list ref
+rms ToMember1 :1-13&!@H= reference out rmsd2.agr
+rms ToMember10 :1-13&!@H= refindex 1 out rmsd2.agr
+rms ToLast :1-13&!@H= ref [last] out rmsd2.agr
+rms ToLast :1-13&!@H= ref [last] out rmsd2.agr
+run
+parm 2GB1.pdb
+reference 2GB1.pdb parm 2GB1.pdb [GB1]
+rms ToGB1 ref [GB1] :1-12@CA :42-47,50-55@CA out rmsd3.agr
+trajout trpzip2.overlap.mol2 onlyframes 1
+run
+quit

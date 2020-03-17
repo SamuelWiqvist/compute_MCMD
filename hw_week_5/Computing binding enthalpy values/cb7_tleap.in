@@ -1,0 +1,29 @@
+source leaprc.gaff
+source leaprc.ff12SB
+
+# Load any extra parameters
+loadamberparams cb7_am1-bcc.frcmod
+
+# Load structure file MOL2
+host = loadmol2 cb7_am1-bcc.mol2
+
+# Add water
+solvatebox host TIP3PBOX 10.18 iso
+
+# Remove excess waters such that the total count is 1500
+remove host host.1510
+remove host host.1509
+remove host host.1508
+remove host host.1507
+remove host host.1506
+remove host host.1505
+remove host host.1504
+remove host host.1503
+remove host host.1502
+remove host host.1501
+
+# Save topology files
+saveamberparm host cb7.prmtop cb7.rst7
+
+# Quit
+quit

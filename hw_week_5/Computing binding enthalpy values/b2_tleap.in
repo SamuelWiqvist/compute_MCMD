@@ -1,0 +1,24 @@
+source leaprc.gaff
+source leaprc.ff12SB
+
+# Load any extra parameters
+loadamberparams b2_am1-bcc.frcmod
+
+# Load structure file MOL2
+guest = loadmol2 b2_am1-bcc.mol2
+
+# Add water
+solvatebox guest TIP3PBOX 13.16 iso
+
+# Remove excess waters such that the total count is 1500
+remove guest guest.1505
+remove guest guest.1504
+remove guest guest.1503
+remove guest guest.1502
+remove guest guest.1501
+
+# Save topology files
+saveamberparm guest b2.prmtop b2.rst7
+
+# Quit
+quit

@@ -1,0 +1,24 @@
+source leaprc.ff12SB
+
+# Load the PDBs
+structure = loadpdb water.pdb
+
+# Add water
+solvatebox structure TIP3PBOX 16.50 iso
+
+# Remove excess waters such that the total count is 1500
+remove structure structure.1509
+remove structure structure.1508
+remove structure structure.1507
+remove structure structure.1506
+remove structure structure.1505
+remove structure structure.1504
+remove structure structure.1503
+remove structure structure.1502
+remove structure structure.1501
+
+# Save topology files
+saveamberparm structure water.prmtop water.rst7
+
+# Quit
+quit

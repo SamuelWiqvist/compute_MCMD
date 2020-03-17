@@ -1,0 +1,9 @@
+All atoms minimization
+ &cntrl
+  imin   = 1,
+  maxcyc = 10000,
+  ncyc   = 500,
+  ntb    = 1,
+  ntr    = 0,
+  cut    = 10.0
+/

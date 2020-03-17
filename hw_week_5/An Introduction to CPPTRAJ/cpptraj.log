@@ -1,0 +1,21 @@
+# 03/17/20 16:52:27
+quit
+# 03/17/20 17:32:30
+parm trpzip2.ff10.mbondi.parm7
+list parm
+parminfo 0
+trajin trpzip2.gb.nc
+list trajin
+help distance
+resinfo
+antominfo :13
+atominfo :13
+distance end-to-end :1 :13 out dist-end-to-end.agr
+list actions
+run
+xmgrace dist-end-to-end.agr
+writedata end-to-end.dat end-to-end
+end-to-end
+writedata end-to-end.dat end-to-end
+head end-to-end.dat
+quit

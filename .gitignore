@@ -7,4 +7,6 @@
 *.rst
 *.mdcrd.gz
 *.mdcrd
+*.nc
+*.dat
 .Rproj.user

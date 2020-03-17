@@ -1,0 +1,11 @@
+# 03/17/20 18:23:45
+parm trpzip2.ff10.tip3p.parm7
+trajin trpzip2.unfold.nc
+hbond All out All.hbvtime.dat solventdonor :WAT solventacceptor :WAT@O avgout All.UU.avg.dat solvout All.UV.avg.dat bridgeout All.bridge.avg.dat
+hbond Backbone :1-12@C,O,N,H avgout BB.avg.dat series uuseries bbhbond.gnu
+create nhbvtime.agr All[UU] Backbone[UU] All[UV] All[Bridge]
+rms BBrmsd :1-12@C,CA,N out BBrmsd.agr
+run
+lifetime Backbone[solutehb] out backbone.lifetime.dat
+runanalysis
+quit
