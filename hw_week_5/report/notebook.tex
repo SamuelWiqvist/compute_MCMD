@@ -280,18 +280,18 @@
     
 
     
-    \section{Molecular dynamics simulation of
-biomolecules}\label{molecular-dynamics-simulation-of-biomolecules}
+    \section{MCMD Course Project 5}\label{mcmd-course-project-5}
 
-\subsubsection{Project 5 in MCMD Tools}\label{project-5-in-mcmd-tools}
+\subsubsection{Molecular Dynamics Simulations of
+Biomolecules}\label{molecular-dynamics-simulations-of-biomolecules}
 
 By: Samuel Wiqvist
 
     \subsection{Introduction}\label{introduction}
 
-In this short report we will use the AMBER software to perform mulecular
-dynamics simulations for biomolecules. In particular, we will run some
-of the AMBER totutorials and report the what we found.
+In this short report, we will use the AMBER software to perform
+molecular dynamics simulations for biomolecules. In particular, we will
+run some of the AMBER' tutorials and report what we find.
 
 The code used in this project can be found here:
 https://github.com/SamuelWiqvist/compute\_MCMD/tree/master/hw\_week\_5
@@ -300,7 +300,7 @@ https://github.com/SamuelWiqvist/compute\_MCMD/tree/master/hw\_week\_5
 AMBER}\label{an-introduction-to-molecular-dynamics-simulations-with-amber}
 
 We decided to use LUNARC to run the tutorials to load the AMBER software
-on LUNARC we use
+on LUNARC we used
 
 \begin{verbatim}
 ml load icc/2017.4.196-GCC-6.4.0-2.28
@@ -308,23 +308,22 @@ ml load OpenMPI/2.1.1
 ml load Ambertools/18.10
 \end{verbatim}
 
-Futhermore, we load the program VMD with
+Furthermore, we loaded VMD with
 
 \begin{verbatim}
 module load vmd/1.9.2
 \end{verbatim}
 
-Finally to generate the plots we use the grace program which we load
-with
+Finally to generate the plots we used Grace, which we loaded with
 
 \begin{verbatim}
 module spider grace/5.1.25
 \end{verbatim}
 
-In the tutroial use run an AMber MD sander simulation in three steps: we
-first ru the mimization, then we heat the system, and finaly we simualte
-the production. To run these three simulations we use following
-run-script
+In the tutorial use ran an AMBER MD sander simulation in three steps: we
+first ran the minimization, then we heated the system, and finally, we
+ran the production. To run these three simulations, we used the
+following script
 
 \begin{verbatim}
 #!/bin/sh
@@ -369,20 +368,25 @@ $AMBERHOME/bin/sander -O -i 03_Prod.in -o 03_Prod.out -p parm7 -c 02_Heat.ncrst 
 -r 03_Prod.ncrst -x 03_Prod.nc -inf 03_Prod.info 
 \end{verbatim}
 
-The three simulations took 8.5 min to run on LUANRC which is somewhat
-faster than what the tutorals says the simualations should be, according
-to the tutorial the last simulation should take 19 min alone.
+The three simulations took 8.5 min to run on \texttt{LUNARC}, which is
+somewhat faster than what the tutorial says the simulations should be,
+according to the tutorial, the last simulation should take 19 min alone.
 
-After running the simulations we rest of the tuturials consists for
-running some visualizations suing VMD and grace, and we could run all
-visualizations without problems from LUNARC.
+After running the simulations, the rest of the tutorial consisted of
+running some visualizations using VMD and Grace. We managed to run all
+visualizations without problems. As, and example, the temperature during
+the simulation is plotted below
 
-{[}WHAT DID WE LEARN??{]}
+\begin{figure}
+\centering
+\includegraphics{Screenshot_temp_intro.png}
+\caption{VMD layout}
+\end{figure}
 
     \subsection{Using VMD with AMBER}\label{using-vmd-with-amber}
 
-To run VMD on the luanrc system I first have load the software with
-following command
+To run VMD on the LUNARC system, we first loaded VMD with the following
+command
 
 \begin{verbatim}
 module load vmd/1.9.2
@@ -390,7 +394,7 @@ module load vmd/1.9.2
 
 \subsubsection{Section 1}\label{section-1}
 
-After configuring the layout I have follwoing layout for VMD
+After configuring the layout, we had following layou-t for VMD
 
 \begin{figure}
 \centering
@@ -400,10 +404,10 @@ After configuring the layout I have follwoing layout for VMD
 
 \subsubsection{Section 2}\label{section-2}
 
-The next step is to load pde file of the Liver Alcohol Dehydrogenase
+The next step is to load the pde file of the Liver Alcohol Dehydrogenase
 (LADH) molecule. After loading the file to VMD and testing out the
-rotate, scale and translate of the OpenGl garphical interface I obtian
-following figure
+rotate, scale and translate of the OpenGl graphical interface we obtain
+the following figure
 
 \begin{figure}
 \centering
@@ -413,14 +417,14 @@ following figure
 
 \subsubsection{Section 3}\label{section-3}
 
-In this step I used thegraphical representation menue to chenage how to
-display the LADH molecule. First I remove all the water molecules with
-the setting \texttt{all\ not\ water}, this however didnt change the
-visalization of the LADH molecule that much. Then I tried changeing the
-visalization by modifying the coloring method and the drawing method.
-When using coloring method \texttt{Secondary\ Structure} and drawing
-method \texttt{NewCartoon} I obtained following visulaization of the
-LADH molecule
+In this step, we used the graphical representation menu to change how to
+display the LADH molecule. First, we removed all the water molecules
+with the setting \texttt{all\ not\ water}; however, this didn't change
+the visualization of the LADH molecule that much. Then we tried changing
+the visualization by modifying the coloring method and the drawing
+method. When using the coloring method \texttt{Secondary\ Structure} and
+drawing method \texttt{NewCartoon} we obtained following visualization
+of the LADH molecule
 
 \begin{figure}
 \centering
@@ -430,8 +434,8 @@ LADH molecule
 \end{figure}
 
 The last part of this section was to change the representation of the
-mulecule. When using the representation feature to only display the
-chain A of the protine we obtained the following visualtiozation
+molecule. When using the representation feature to only display the
+chain A of the protine, we obtained the following visualization
 
 \begin{figure}
 \centering
@@ -441,8 +445,9 @@ chain A of the protine we obtained the following visualtiozation
 
 \subsubsection{Section 4}\label{section-4}
 
-First we load the mulecule stored in the \texttt{TRPcage.pdb}, and then
-after setting up the proper visulazation we obtianed follwing figure
+First, we loaded the molecule stored in \texttt{TRPcage.pdb}, and then
+after setting up the proper visulazation, we obtained the following
+figure
 
 \begin{figure}
 \centering
@@ -450,21 +455,21 @@ after setting up the proper visulazation we obtianed follwing figure
 \caption{First Visualization of TRP}
 \end{figure}
 
-Then we loaded differnt versions of the molecule representing eaither
-the minimized or unminimuizes strucuture: The minimized structure is
-repsented below
+Then we loaded different versions of the molecule representing either
+the minimized or unminimuizes structure: The minimized structure is
+presented below
 
 \begin{figure}
 \centering
 \includegraphics{Screenshot_fig_trp_min.png}
-\caption{First Visualization of minimized structure}
+\caption{First Visualization of the minimized structure}
 \end{figure}
 
 \subsubsection{Section 5}\label{section-5}
 
-In the first step of this section we load two structcures and fix one of
-them, so that we can rotate the other one whitout moving the first one.
-For this task we obtain following figure
+In the first step of this section, we loaded two structures and fixed
+one of them, so that we can rotate the other one without moving the
+first one. For this task, we obtain the following figure
 
 \begin{figure}
 \centering
@@ -473,79 +478,75 @@ For this task we obtain following figure
 \end{figure}
 
 The next step is to compute the RMSD between two structures where one of
-the structures is a shifter version of the other. For this task we otain
-RMSD to be \(\approx 2.18\) angstroms, we then algin the structues and
-agin compute the RMSD. The RMSD between the algien structures was
-\(\approx 0.57\) angstroms. The algines structes are presented below.
+the structures is a shifted version of the other. For this task, we
+obtain RMSD to be \(\approx 2.18\) angstroms. We then aligned the
+structures and again computed the RMSD. The RMSD between the aligned
+structures was \(\approx 0.57\) angstroms. The aligned structures are
+presented below.
 
 \begin{figure}
 \centering
 \includegraphics{Screenshot_algined.png}
-\caption{The two algined structures}
+\caption{The two aligned structures}
 \end{figure}
 
 \subsubsection{Section 6}\label{section-6}
 
-In this task we use VMD to visulize the trejectory path compute using
-AMBER. The visualization and playback fo the strucutre during the
-simualtion worked well.
+In this task, we used VMD to visualize the trajectory path computed
+using AMBER. The visualization and playback fo the structure during the
+simulation worked well.
 
 \subsubsection{Section 7}\label{section-7}
 
-The task here was to save the simulation at fram 300 to a seperate
-\texttt{pdb} file. Hwever, when I tried to do this I got ther error
-message \(Error writing trajectory file\). So I could not complete this
-task. Instead I downloaded the file I should have been able to create
-from the tutrorial web site.
+The task here was to save the simulation at frame 300 to a separate
+\texttt{pdb} file. However, when we tried to do this, we got the error
+message: \(Error writing trajectory file\). So we could not complete
+this task. Instead, we downloaded the file we should have been able to
+create from the tutorial web site.
 
 \subsubsection{Section 8}\label{section-8}
 
-In this task we sue the system parameter tracking capabilities to show
-the distance between parts of the strucutre during the simulation. Frame
-\(294\) of the simulationwhere we keep track of the distance between the
-two ends of the structre is presented below
+In this task, we use the system parameter tracking capabilities to show
+the distance between parts of the structure during the simulation. Frame
+\(294\) of the simulation where we keep track of the distance between
+the two ends of the structure is presented below
 
 \begin{figure}
 \centering
 \includegraphics{Screenshot_dist_ends.png}
-\caption{Frame 294 where we show the disatnce betweent he ends of
+\caption{Frame 294 where we show the distance between he ends of the
 structure}
 \end{figure}
 
 \subsubsection{Section 9}\label{section-9}
 
-The final part included using VMD to create a \texttt{mpg} movie.
-However, I could not create the movie since I got the error
+The final part included using VMD to create an \texttt{mpg} movie.
+However, we could not create the movie since we got the error
 \texttt{Program\ not\ found} saying that VMD could not locate
 'ppmtompeg', when trying to create the movie.
 
     \section{Loop dynamics of the HIV-1 integrase core
 domain}\label{loop-dynamics-of-the-hiv-1-integrase-core-domain}
 
-Agian I start of with loading Amber to the lunarc system.
-
-The idea for this tutorial was to run an MD simulations but serveal of
-the data setup steps faild when I tried to run them So I ccould not
-complite this tutorial.
+The idea for this tutorial was to run an MD simulation. However, we
+could not get the data setup to work, so we instead downloaded the files
+from the webpage. The energy minimization and visualization tasks also
+did not work properly, so we again downloaded the files from the webpage
+and worked through the tutorial that way.
 
     \section{A case study in folding
 Trp-Cage}\label{a-case-study-in-folding-trp-cage}
 
 \subsubsection{Section 1}\label{section-1}
 
-In this section we were supposed to use xleap to create the starting
-structure. However, I did not managae to do this paart (I could not
-understand how to include the force field). So I instead downloaded the
-resultsing files from the tutorial web page.
-
-In this first section we use xleap to create teh structure direcly from
-the amino acide sequence. We present the sequence below using the edit
-\texttt{command} in \texttt{xleap}
+In this first section, we use \texttt{xleap} to create the structure
+directly from the amino acid sequence. We present the sequence below
+using the edit \texttt{command} in \texttt{xleap}
 
 \begin{figure}
 \centering
 \includegraphics{Screenshot_xleap.png}
-\caption{The sequnece created in xleap}
+\caption{The sequence created in xleap}
 \end{figure}
 
 The final step here is to save the structure in a \texttt{lib} and
@@ -554,16 +555,17 @@ The final step here is to save the structure in a \texttt{lib} and
 \subsubsection{Section 2}\label{section-2}
 
 The task in this section was to load the Amber parameters of the
-structur and save them in new files. This steo work well without any
+structure and save them in new files. This step worked well without any
 problems.
 
 \subsubsection{Section 3}\label{section-3}
 
-In this section we run the minimization in Amber using the input files
-we created in Section 1 and 2. The minimization ran without any
-problems. After running the minimization we used VMD to view the final
-results, which are presented below. InVMD we aslo compute the RMSD
-between the two structures and the RMSD was \(\approx 0.54\) angstrom.
+In this section, we run the minimization in \texttt{AMBER} using the
+input files we created in Section 1 and 2. The minimization ran without
+any problems. After running the minimization, we used \texttt{VMD} to
+view the final results, which are presented below. In \texttt{VMD} we
+also compute the RMSD between the two structures, and the RMSD was
+\(\approx 0.54\) angstrom.
 
 \begin{figure}
 \centering
@@ -572,6 +574,165 @@ between the two structures and the RMSD was \(\approx 0.54\) angstrom.
 \end{figure}
 
 \subsubsection{Section 4}\label{section-4}
+
+I tried running the simulations for different heats with \texttt{AMBER}
+using the following script
+
+\begin{verbatim}
+#!/bin/sh
+
+# Set up for run:
+
+# need this since I use a LU project
+#SBATCH -A lu2019-2-19
+#SBATCH -p lu
+
+
+# use gpu nodes
+#SBATCH -N 1
+#SBATCH -n 1
+# #SBATCH --mem-per-cpu=11000
+# #SBATCH -C mem256GB
+
+# time consumption HH:MM:SS
+#SBATCH -t 1:00:00
+
+# name for script
+#SBATCH -J amber_run
+
+# controll job outputs
+#SBATCH -o outputs_amber_run_%j.out
+#SBATCH -e errors_amber_run_%j.err
+
+# notification
+#SBATCH --mail-user=samuel.wiqvist@matstat.lu.se
+#SBATCH --mail-type=ALL
+
+# load modules
+ml load  icc/2017.4.196-GCC-6.4.0-2.28
+ml load OpenMPI/2.1.1
+ml load Ambertools/18.10
+
+mpirun -np 16 $AMBERHOME/bin/sander -O -i heat1.in -p TC5b.prmtop -c min1.ncrst -r heat1.ncrst -o heat1.out -x heat1.nc
+gzip -9 heat1.nc
+mpirun -np 16 $AMBERHOME/bin/sander -O -i heat2.in -p TC5b.prmtop -c heat1.ncrst -r heat2.ncrst -o heat2.out -x heat2.nc
+gzip -9 heat2.nc
+mpirun -np 16 $AMBERHOME/bin/sander -O -i heat3.in -p TC5b.prmtop -c heat2.ncrst -r heat3.ncrst -o heat3.out -x heat3.nc
+gzip -9 heat3.nc
+mpirun -np 16 $AMBERHOME/bin/sander -O -i heat4.in -p TC5b.prmtop -c heat3.ncrst -r heat4.ncrst -o heat4.out -x heat4.nc
+gzip -9 heat4.nc
+mpirun -np 16 $AMBERHOME/bin/sander -O -i heat5.in -p TC5b.prmtop -c heat4.ncrst -r heat5.ncrst -o heat5.out -x heat5.nc
+gzip -9 heat5.nc
+mpirun -np 16 $AMBERHOME/bin/sander -O -i heat6.in -p TC5b.prmtop -c heat5.ncrst -r heat6.ncrst -o heat6.out -x heat6.nc
+gzip -9 heat6.nc
+mpirun -np 16 $AMBERHOME/bin/sander -O -i heat7.in -p TC5b.prmtop -c heat6.ncrst -r heat7.ncrst -o heat7.out -x heat7.nc
+gzip -9 heat7.nc
+\end{verbatim}
+
+However, this script failed, and we instead ran the simulations directly
+on the local \texttt{LUNARC} node we used for the visualizations. After
+running the simulations, the task was to use \texttt{VMD} to visualize
+the simulations. But we could not get this step to work properly.
+
+\subsubsection{Section 5}\label{section-5}
+
+The task here was to run a long production run. However, I did not run
+the production run but instead downloaded the results files from the
+tutorial webpage. The next step was to visualize the simulations, but
+the instructions for this step were very unclear, so we did not manage
+to do that part.
+
+\subsubsection{Section 6}\label{section-6}
+
+In this section, we used \texttt{xmgrace} to visualize the summary
+results, see figures below.
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_temp.png}
+\caption{Temprature}
+\end{figure}
+
+We also plot the Total Energy (Black), Potential Energy (Red), Kinetic
+Energy (Green), see below
+
+\begin{figure}
+\centering
+\includegraphics{Screenshot_energy.png}
+\caption{Total Energy (Black), Potential Energy (Red), Kinetic Energy
+(Green)}
+\end{figure}
+
+In this part, we also produced several other plots that we have not
+included in this report.
+
+\subsubsection{Section 7}\label{section-7}
+
+For this section, the task was to redo the simulations for several other
+settings and study the differences in results.
+
+    \section{Thermodynamic Integration using soft core
+potentials}\label{thermodynamic-integration-using-soft-core-potentials}
+
+For this tutorial, we downloaded the files and scripts and worked
+through the tutorial using the provided files and scripts.
+
+    \section{Computing binding enthalpy
+values}\label{computing-binding-enthalpy-values}
+
+The first step was to use tleap to create the input files for the
+simulations. Some of the tleap commands, however, failed, so we instead
+downloaded the files from the tutorial webpage.
+
+The next step was to run the minimization, but we could not get the
+command \texttt{pmemd} to work (even after loading `AMBER), so we
+instead downloaded the resulting files from the webpage.
+
+For heating the system, we also restored to downloading the files from
+the tutorial webpage.
+
+Since we were not able to run the simulations, we also did not manage to
+check the results, as suggested in the tutorial.
+
+As suggested in the tutorial, we downloaded the result files from the
+webpage instead of running the simulations. Of course, the results
+(total energy numbers) that we calculated in section 4 were similar to
+the ones on the webpage.
+
+    \section{An Introduction to CPPTRAJ}\label{an-introduction-to-cpptraj}
+
+We first tried to run a simple analysis using interactive mode, and
+everything worked well. We then ran the same analysis using the batch
+mode, and also that worked well.
+
+\section{RMSD Analysis in CPPTRAJ}\label{rmsd-analysis-in-cpptraj}
+
+In this tutorial, we ran a coordinate root-mean-squared deviation (RMSD)
+analysis on the output from an MD simulation. We were not able to create
+the plots (since it was not able to load both AMBER and Grace at the
+same time), but this is a minor problem since the plots easily can be
+created with many different plotting software or without first loading
+AMBER.
+
+In the second part of the tutorial, we used reference structures and
+different topologies, and both these methods worked well.
+
+\section{Hydrogen Bond Analysis with
+CPPTRAJ}\label{hydrogen-bond-analysis-with-cpptraj}
+
+In this tutorial, we used CPPTRAJ to find and track hydrogen bonds in a
+molecule. We could run all analyses in this tutorial without problems.
+
+    \section{Setting up and protonating with
+Maestro}\label{setting-up-and-protonating-with-maestro}
+
+The Maestro software was not installed on LUNARC, so we instead
+installed the free version of Maestro on a local laptop.
+
+After installing Maestro we tried to run the tutorial on lysozyme (PDE
+181L: https://www.rcsb.org/structure/181L). However, some errors
+occurred we tried to run the tutorial, so we did not manage to complete
+it.
 
 
     % Add a bibliography block to the postdoc
